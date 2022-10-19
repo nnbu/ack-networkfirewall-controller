@@ -1,0 +1,8 @@
+service:
+  full_name: "Network Firewall"
+  short_name: "NETWORKFIREWALL"
+  link: "https://aws.amazon.com/network-firewall/"
+  documentation: "https://aws.amazon.com/network-firewall/getting-started/"
+api_versions:
+  - api_version: v1alpha1
+    status: available
