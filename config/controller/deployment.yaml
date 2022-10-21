@@ -8,7 +8,7 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ack-networkfirewall-controller
+  name: networkfirewall-controller
   namespace: ack-system
   labels:
     control-plane: controller
@@ -27,7 +27,7 @@ spec:
         - ./bin/controller
         args:
         - --aws-region
-        - us-west-1
+        - "$(AWS_REGION)"
         - --aws-endpoint-url
         - "$(AWS_ENDPOINT_URL)"
         - --enable-development-logging
@@ -38,7 +38,7 @@ spec:
         - "$(ACK_RESOURCE_TAGS)"
         - --watch-namespace
         - "$(ACK_WATCH_NAMESPACE)"
-        image: 666135982843.dkr.ecr.us-west-1.amazonaws.com/ack-controller-repo:latest
+        image: controller:latest
         name: controller
         ports:
           - name: http

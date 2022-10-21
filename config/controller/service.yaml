@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ack-networkfirewall-metrics-service
+  name: networkfirewall-metrics-service
   namespace: ack-system
 spec:
   selector:
