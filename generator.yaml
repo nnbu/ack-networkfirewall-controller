@@ -1,0 +1,59 @@
+ignore:
+  operations: []
+  field_paths:
+  - CreateFirewallPolicyInput.DryRun
+  resource_names: []
+
+operations:
+  CreateVpcEndpoint:
+    output_wrapper_field_path: VpcEndpoint
+  DeleteVpcEndpoints:
+    operation_type:
+      - Delete
+    resource_name: VpcEndpoint
+
+resources:
+  Firewall:
+    exceptions:
+      terminal_codes: []
+    fields:
+      FirewallName: 
+        is_primary_key: true
+    exceptions:
+      errors:
+        404:
+          code: ResourceNotFoundException
+    synced:
+      when:
+      - path: Status.FirewallStatus.Status
+        in:
+        - READY
+    hooks:
+      sdk_delete_post_request:
+        template_path: common/sdk_delete_post_request.go.tpl
+  FirewallPolicy:
+    exceptions:
+      errors:
+        404:
+          code: ResourceNotFoundException
+    fields:
+      FirewallPolicyName:
+        is_primary_key: true
+    synced:
+      when:
+      - path: Status.FirewallPolicyResponse.FirewallPolicyStatus
+        in:
+        - ACTIVE
+  RuleGroup:
+    fields:
+      RuleGroupName:
+        is_primary_key: true
+    exceptions:
+      errors:
+        404:
+          code: ResourceNotFoundException
+    synced:
+      when:
+      - path: Status.RuleGroupResponse.RuleGroupStatus
+        in:
+        - ACTIVE
