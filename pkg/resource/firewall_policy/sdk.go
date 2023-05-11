@@ -77,6 +77,9 @@ func (rm *resourceManager) sdkFind(
 	resp, err = rm.sdkapi.DescribeFirewallPolicyWithContext(ctx, input)
 	rm.metrics.RecordAPICall("READ_ONE", "DescribeFirewallPolicy", err)
 	if err != nil {
+		if reqErr, ok := ackerr.AWSRequestFailure(err); ok && reqErr.StatusCode() == 404 {
+			return nil, ackerr.NotFound
+		}
 		if awsErr, ok := ackerr.AWSError(err); ok && awsErr.Code() == "ResourceNotFoundException" {
 			return nil, ackerr.NotFound
 		}
@@ -538,7 +541,7 @@ func (rm *resourceManager) sdkUpdate(
 	defer func() {
 		exit(err)
 	}()
-	input, err := rm.newUpdateRequestPayload(ctx, desired)
+	input, err := rm.newUpdateRequestPayload(ctx, desired, delta)
 	if err != nil {
 		return nil, err
 	}
@@ -626,6 +629,7 @@ func (rm *resourceManager) sdkUpdate(
 func (rm *resourceManager) newUpdateRequestPayload(
 	ctx context.Context,
 	r *resource,
+	delta *ackcompare.Delta,
 ) (*svcsdk.UpdateFirewallPolicyInput, error) {
 	res := &svcsdk.UpdateFirewallPolicyInput{}
 
@@ -895,6 +899,17 @@ func (rm *resourceManager) updateConditions(
 // and if the exception indicates that it is a Terminal exception
 // 'Terminal' exception are specified in generator configuration
 func (rm *resourceManager) terminalAWSError(err error) bool {
-	// No terminal_errors specified for this resource in generator config
-	return false
+	if err == nil {
+		return false
+	}
+	awsErr, ok := ackerr.AWSError(err)
+	if !ok {
+		return false
+	}
+	switch awsErr.Code() {
+	case "InvalidRequestException":
+		return true
+	default:
+		return false
+	}
 }

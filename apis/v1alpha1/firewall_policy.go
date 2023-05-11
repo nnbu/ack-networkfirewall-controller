@@ -29,6 +29,7 @@ import (
 // This, along with FirewallPolicyResponse, define the policy. You can retrieve
 // all objects for a firewall policy by calling DescribeFirewallPolicy.
 type FirewallPolicySpec struct {
+
 	// A description of the firewall policy.
 	Description *string `json:"description,omitempty"`
 	// A complex type that contains settings for encryption of your firewall policy

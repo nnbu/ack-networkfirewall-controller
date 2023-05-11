@@ -1,25 +1,16 @@
 ignore:
-  operations: []
   field_paths:
   - CreateFirewallPolicyInput.DryRun
-  resource_names: []
-
-operations:
-  CreateVpcEndpoint:
-    output_wrapper_field_path: VpcEndpoint
-  DeleteVpcEndpoints:
-    operation_type:
-      - Delete
-    resource_name: VpcEndpoint
-
+  resource_names:
+  - TLSInspectionConfiguration
 resources:
   Firewall:
-    exceptions:
-      terminal_codes: []
     fields:
       FirewallName: 
         is_primary_key: true
     exceptions:
+      terminal_codes:
+      - InvalidRequestException
       errors:
         404:
           code: ResourceNotFoundException
@@ -33,6 +24,8 @@ resources:
         template_path: common/sdk_delete_post_request.go.tpl
   FirewallPolicy:
     exceptions:
+      terminal_codes:
+      - InvalidRequestException
       errors:
         404:
           code: ResourceNotFoundException
@@ -49,6 +42,8 @@ resources:
       RuleGroupName:
         is_primary_key: true
     exceptions:
+      terminal_codes:
+      - InvalidRequestException
       errors:
         404:
           code: ResourceNotFoundException

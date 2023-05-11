@@ -1,10 +1,9 @@
-
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.9.2
   creationTimestamp: null
   name: rulegroups.networkfirewall.services.k8s.aws
 spec:
@@ -55,23 +54,23 @@ spec:
                   would be required for a rule group before you create the rule group
                   by calling CreateRuleGroup with DryRun set to TRUE. \n You can't
                   change or exceed this capacity when you update the rule group, so
-                  leave room for your rule group to grow. \n Capacity for a stateless
+                  leave room for your rule group to grow. \n # Capacity for a stateless
                   rule group \n For a stateless rule group, the capacity required
                   is the sum of the capacity requirements of the individual rules
                   that you expect to have in the rule group. \n To calculate the capacity
                   requirement of a single rule, multiply the capacity requirement
-                  values of each of the rule's match settings: \n    * A match setting
-                  with no criteria specified has a value of 1. \n    * A match setting
-                  with Any specified has a value of 1. \n    * All other match settings
-                  have a value equal to the number of elements    provided in the
-                  setting. For example, a protocol setting [\"UDP\"] and a    source
-                  setting [\"10.0.0.0/24\"] each have a value of 1. A protocol setting
-                  \   [\"UDP\",\"TCP\"] has a value of 2. A source setting [\"10.0.0.0/24\",\"10.0.0.1/24\",\"10.0.0.2/24\"]
-                  \   has a value of 3. \n A rule with no criteria specified in any
-                  of its match settings has a capacity requirement of 1. A rule with
+                  values of each of the rule's match settings: \n - A match setting
+                  with no criteria specified has a value of 1. \n - A match setting
+                  with Any specified has a value of 1. \n - All other match settings
+                  have a value equal to the number of elements provided in the setting.
+                  For example, a protocol setting [\"UDP\"] and a source setting [\"10.0.0.0/24\"]
+                  each have a value of 1. A protocol setting [\"UDP\",\"TCP\"] has
+                  a value of 2. A source setting [\"10.0.0.0/24\",\"10.0.0.1/24\",\"10.0.0.2/24\"]
+                  has a value of 3. \n A rule with no criteria specified in any of
+                  its match settings has a capacity requirement of 1. A rule with
                   protocol setting [\"UDP\",\"TCP\"], source setting [\"10.0.0.0/24\",\"10.0.0.1/24\",\"10.0.0.2/24\"],
                   and a single specification or no specification for each of the other
-                  match settings has a capacity requirement of 6. \n Capacity for
+                  match settings has a capacity requirement of 6. \n # Capacity for
                   a stateful rule group \n For a stateful rule group, the minimum
                   capacity required is the number of individual rules that you expect
                   to have in the rule group."
@@ -106,6 +105,32 @@ spec:
                   must provide either this rule group setting or a Rules setting,
                   but not both."
                 properties:
+                  referenceSets:
+                    description: Contains a set of IP set references.
+                    properties:
+                      iPSetReferences:
+                        additionalProperties:
+                          description: "Configures one or more IP set references for
+                            a Suricata-compatible rule group. This is used in CreateRuleGroup
+                            or UpdateRuleGroup. An IP set reference is a rule variable
+                            that references a resource that you create and manage
+                            in another Amazon Web Services service, such as an Amazon
+                            VPC prefix list. Network Firewall IP set references enable
+                            you to dynamically update the contents of your rules.
+                            When you create, update, or delete the IP set you are
+                            referencing in your rule, Network Firewall automatically
+                            updates the rule's content with the changes. For more
+                            information about IP set references in Network Firewall,
+                            see Using IP set references (https://docs.aws.amazon.com/network-firewall/latest/developerguide/rule-groups-ip-set-references)
+                            in the Network Firewall Developer Guide. \n Network Firewall
+                            currently supports only Amazon VPC prefix lists (https://docs.aws.amazon.com/vpc/latest/userguide/managed-prefix-lists.html)
+                            as IP set references."
+                          properties:
+                            referenceARN:
+                              type: string
+                          type: object
+                        type: object
+                    type: object
                   ruleVariables:
                     description: Settings that are available for use in the rules
                       in the RuleGroup where this is defined.
@@ -223,19 +248,19 @@ spec:
                                 \n You define and name the custom actions that you
                                 want to be able to use, and then you reference them
                                 by name in your actions settings. \n You can use custom
-                                actions in the following places: \n   - In a rule
-                                group's StatelessRulesAndCustomActions specification.
-                                The     custom actions are available for use by name
-                                inside the StatelessRulesAndCustomActions     where
-                                you define them. You can use them for your stateless
-                                rule actions     to specify what to do with a packet
-                                that matches the rule's match attributes. \n   - In
-                                a FirewallPolicy specification, in StatelessCustomActions.
-                                The custom     actions are available for use inside
-                                the policy where you define them.     You can use
-                                them for the policy's default stateless actions settings
-                                to     specify what to do with packets that don't
-                                match any of the policy's stateless     rules."
+                                actions in the following places: \n - In a rule group's
+                                StatelessRulesAndCustomActions specification. The
+                                custom actions are available for use by name inside
+                                the StatelessRulesAndCustomActions where you define
+                                them. You can use them for your stateless rule actions
+                                to specify what to do with a packet that matches the
+                                rule's match attributes. \n - In a FirewallPolicy
+                                specification, in StatelessCustomActions. The custom
+                                actions are available for use inside the policy where
+                                you define them. You can use them for the policy's
+                                default stateless actions settings to specify what
+                                to do with packets that don't match any of the policy's
+                                stateless rules."
                               properties:
                                 actionDefinition:
                                   description: A custom action to use in stateless
@@ -597,9 +622,3 @@ spec:
     storage: true
     subresources:
       status: {}
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []
