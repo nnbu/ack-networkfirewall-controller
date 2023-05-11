@@ -1,10 +1,9 @@
-
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.9.2
   creationTimestamp: null
   name: firewalls.networkfirewall.services.k8s.aws
 spec:
@@ -264,6 +263,33 @@ spec:
                   You can retrieve this for a firewall by calling DescribeFirewall
                   and providing the firewall name and ARN.
                 properties:
+                  capacityUsageSummary:
+                    description: The capacity usage summary of the resources used
+                      by the ReferenceSets in a firewall.
+                    properties:
+                      cidrs:
+                        description: Summarizes the CIDR blocks used by the IP set
+                          references in a firewall. Network Firewall calculates the
+                          number of CIDRs by taking an aggregated count of all CIDRs
+                          used by the IP sets you are referencing.
+                        properties:
+                          availableCIDRCount:
+                            format: int64
+                            type: integer
+                          iPSetReferences:
+                            additionalProperties:
+                              description: General information about the IP set.
+                              properties:
+                                resolvedCIDRCount:
+                                  format: int64
+                                  type: integer
+                              type: object
+                            type: object
+                          utilizedCIDRCount:
+                            format: int64
+                            type: integer
+                        type: object
+                    type: object
                   configurationSyncStateSummary:
                     type: string
                   status:
@@ -273,9 +299,9 @@ spec:
                       description: "The status of the firewall endpoint and firewall
                         policy configuration for a single VPC subnet. \n For each
                         VPC subnet that you associate with a firewall, Network Firewall
-                        does the following: \n    * Instantiates a firewall endpoint
-                        in the subnet, ready to take traffic. \n    * Configures the
-                        endpoint with the current firewall policy settings, to    provide
+                        does the following: \n * Instantiates a firewall endpoint
+                        in the subnet, ready to take traffic. \n * Configures the
+                        endpoint with the current firewall policy settings, to provide
                         the filtering behavior for the endpoint. \n When you update
                         a firewall, for example to add a subnet association or change
                         a rule group in the firewall policy, the affected sync states
@@ -320,9 +346,3 @@ spec:
     storage: true
     subresources:
       status: {}
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []

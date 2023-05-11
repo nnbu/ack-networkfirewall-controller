@@ -51,6 +51,24 @@ type Attachment struct {
 	SubnetID   *string `json:"subnetID,omitempty"`
 }
 
+// Summarizes the CIDR blocks used by the IP set references in a firewall. Network
+// Firewall calculates the number of CIDRs by taking an aggregated count of
+// all CIDRs used by the IP sets you are referencing.
+type CIDRSummary struct {
+	AvailableCIDRCount *int64                    `json:"availableCIDRCount,omitempty"`
+	IPSetReferences    map[string]*IPSetMetadata `json:"iPSetReferences,omitempty"`
+	UtilizedCIDRCount  *int64                    `json:"utilizedCIDRCount,omitempty"`
+}
+
+// The capacity usage summary of the resources used by the ReferenceSets in
+// a firewall.
+type CapacityUsageSummary struct {
+	// Summarizes the CIDR blocks used by the IP set references in a firewall. Network
+	// Firewall calculates the number of CIDRs by taking an aggregated count of
+	// all CIDRs used by the IP sets you are referencing.
+	CIDRs *CIDRSummary `json:"cidrs,omitempty"`
+}
+
 // An optional, non-standard action to use for stateless packet handling. You
 // can define this in addition to the standard action that you must specify.
 //
@@ -167,6 +185,9 @@ type FirewallPolicy_SDK struct {
 // this for a firewall by calling DescribeFirewall and providing the firewall
 // name and ARN.
 type FirewallStatus_SDK struct {
+	// The capacity usage summary of the resources used by the ReferenceSets in
+	// a firewall.
+	CapacityUsageSummary          *CapacityUsageSummary `json:"capacityUsageSummary,omitempty"`
 	ConfigurationSyncStateSummary *string               `json:"configurationSyncStateSummary,omitempty"`
 	Status                        *string               `json:"status,omitempty"`
 	SyncStates                    map[string]*SyncState `json:"syncStates,omitempty"`
@@ -221,6 +242,28 @@ type IPSet struct {
 	Definition []*string `json:"definition,omitempty"`
 }
 
+// General information about the IP set.
+type IPSetMetadata struct {
+	ResolvedCIDRCount *int64 `json:"resolvedCIDRCount,omitempty"`
+}
+
+// Configures one or more IP set references for a Suricata-compatible rule group.
+// This is used in CreateRuleGroup or UpdateRuleGroup. An IP set reference is
+// a rule variable that references a resource that you create and manage in
+// another Amazon Web Services service, such as an Amazon VPC prefix list. Network
+// Firewall IP set references enable you to dynamically update the contents
+// of your rules. When you create, update, or delete the IP set you are referencing
+// in your rule, Network Firewall automatically updates the rule's content with
+// the changes. For more information about IP set references in Network Firewall,
+// see Using IP set references (https://docs.aws.amazon.com/network-firewall/latest/developerguide/rule-groups-ip-set-references)
+// in the Network Firewall Developer Guide.
+//
+// Network Firewall currently supports only Amazon VPC prefix lists (https://docs.aws.amazon.com/vpc/latest/userguide/managed-prefix-lists.html)
+// as IP set references.
+type IPSetReference struct {
+	ReferenceARN *string `json:"referenceARN,omitempty"`
+}
+
 // Criteria for Network Firewall to use to inspect an individual packet in stateless
 // rule inspection. Each match attributes set can include one or more items
 // such as IP address, CIDR range, port number, protocol, and TCP flags.
@@ -262,6 +305,11 @@ type PortSet struct {
 // value to be published.
 type PublishMetricAction struct {
 	Dimensions []*Dimension `json:"dimensions,omitempty"`
+}
+
+// Contains a set of IP set references.
+type ReferenceSets struct {
+	IPSetReferences map[string]*IPSetReference `json:"iPSetReferences,omitempty"`
 }
 
 // The inspection criteria and action for a single stateless rule. Network Firewall
@@ -328,6 +376,8 @@ type RuleGroupResponse struct {
 // from more than one firewall policy, and you can use a firewall policy in
 // more than one firewall.
 type RuleGroup_SDK struct {
+	// Contains a set of IP set references.
+	ReferenceSets *ReferenceSets `json:"referenceSets,omitempty"`
 	// Settings that are available for use in the rules in the RuleGroup where this
 	// is defined.
 	RuleVariables *RuleVariables `json:"ruleVariables,omitempty"`

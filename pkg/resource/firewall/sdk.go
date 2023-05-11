@@ -77,6 +77,9 @@ func (rm *resourceManager) sdkFind(
 	resp, err = rm.sdkapi.DescribeFirewallWithContext(ctx, input)
 	rm.metrics.RecordAPICall("READ_ONE", "DescribeFirewall", err)
 	if err != nil {
+		if reqErr, ok := ackerr.AWSRequestFailure(err); ok && reqErr.StatusCode() == 404 {
+			return nil, ackerr.NotFound
+		}
 		if awsErr, ok := ackerr.AWSError(err); ok && awsErr.Code() == "ResourceNotFoundException" {
 			return nil, ackerr.NotFound
 		}
@@ -157,6 +160,31 @@ func (rm *resourceManager) sdkFind(
 	}
 	if resp.FirewallStatus != nil {
 		f1 := &svcapitypes.FirewallStatus_SDK{}
+		if resp.FirewallStatus.CapacityUsageSummary != nil {
+			f1f0 := &svcapitypes.CapacityUsageSummary{}
+			if resp.FirewallStatus.CapacityUsageSummary.CIDRs != nil {
+				f1f0f0 := &svcapitypes.CIDRSummary{}
+				if resp.FirewallStatus.CapacityUsageSummary.CIDRs.AvailableCIDRCount != nil {
+					f1f0f0.AvailableCIDRCount = resp.FirewallStatus.CapacityUsageSummary.CIDRs.AvailableCIDRCount
+				}
+				if resp.FirewallStatus.CapacityUsageSummary.CIDRs.IPSetReferences != nil {
+					f1f0f0f1 := map[string]*svcapitypes.IPSetMetadata{}
+					for f1f0f0f1key, f1f0f0f1valiter := range resp.FirewallStatus.CapacityUsageSummary.CIDRs.IPSetReferences {
+						f1f0f0f1val := &svcapitypes.IPSetMetadata{}
+						if f1f0f0f1valiter.ResolvedCIDRCount != nil {
+							f1f0f0f1val.ResolvedCIDRCount = f1f0f0f1valiter.ResolvedCIDRCount
+						}
+						f1f0f0f1[f1f0f0f1key] = f1f0f0f1val
+					}
+					f1f0f0.IPSetReferences = f1f0f0f1
+				}
+				if resp.FirewallStatus.CapacityUsageSummary.CIDRs.UtilizedCIDRCount != nil {
+					f1f0f0.UtilizedCIDRCount = resp.FirewallStatus.CapacityUsageSummary.CIDRs.UtilizedCIDRCount
+				}
+				f1f0.CIDRs = f1f0f0
+			}
+			f1.CapacityUsageSummary = f1f0
+		}
 		if resp.FirewallStatus.ConfigurationSyncStateSummary != nil {
 			f1.ConfigurationSyncStateSummary = resp.FirewallStatus.ConfigurationSyncStateSummary
 		}
@@ -164,39 +192,39 @@ func (rm *resourceManager) sdkFind(
 			f1.Status = resp.FirewallStatus.Status
 		}
 		if resp.FirewallStatus.SyncStates != nil {
-			f1f2 := map[string]*svcapitypes.SyncState{}
-			for f1f2key, f1f2valiter := range resp.FirewallStatus.SyncStates {
-				f1f2val := &svcapitypes.SyncState{}
-				if f1f2valiter.Attachment != nil {
-					f1f2valf0 := &svcapitypes.Attachment{}
-					if f1f2valiter.Attachment.EndpointId != nil {
-						f1f2valf0.EndpointID = f1f2valiter.Attachment.EndpointId
+			f1f3 := map[string]*svcapitypes.SyncState{}
+			for f1f3key, f1f3valiter := range resp.FirewallStatus.SyncStates {
+				f1f3val := &svcapitypes.SyncState{}
+				if f1f3valiter.Attachment != nil {
+					f1f3valf0 := &svcapitypes.Attachment{}
+					if f1f3valiter.Attachment.EndpointId != nil {
+						f1f3valf0.EndpointID = f1f3valiter.Attachment.EndpointId
 					}
-					if f1f2valiter.Attachment.Status != nil {
-						f1f2valf0.Status = f1f2valiter.Attachment.Status
+					if f1f3valiter.Attachment.Status != nil {
+						f1f3valf0.Status = f1f3valiter.Attachment.Status
 					}
-					if f1f2valiter.Attachment.SubnetId != nil {
-						f1f2valf0.SubnetID = f1f2valiter.Attachment.SubnetId
+					if f1f3valiter.Attachment.SubnetId != nil {
+						f1f3valf0.SubnetID = f1f3valiter.Attachment.SubnetId
 					}
-					f1f2val.Attachment = f1f2valf0
+					f1f3val.Attachment = f1f3valf0
 				}
-				if f1f2valiter.Config != nil {
-					f1f2valf1 := map[string]*svcapitypes.PerObjectStatus{}
-					for f1f2valf1key, f1f2valf1valiter := range f1f2valiter.Config {
-						f1f2valf1val := &svcapitypes.PerObjectStatus{}
-						if f1f2valf1valiter.SyncStatus != nil {
-							f1f2valf1val.SyncStatus = f1f2valf1valiter.SyncStatus
+				if f1f3valiter.Config != nil {
+					f1f3valf1 := map[string]*svcapitypes.PerObjectStatus{}
+					for f1f3valf1key, f1f3valf1valiter := range f1f3valiter.Config {
+						f1f3valf1val := &svcapitypes.PerObjectStatus{}
+						if f1f3valf1valiter.SyncStatus != nil {
+							f1f3valf1val.SyncStatus = f1f3valf1valiter.SyncStatus
 						}
-						if f1f2valf1valiter.UpdateToken != nil {
-							f1f2valf1val.UpdateToken = f1f2valf1valiter.UpdateToken
+						if f1f3valf1valiter.UpdateToken != nil {
+							f1f3valf1val.UpdateToken = f1f3valf1valiter.UpdateToken
 						}
-						f1f2valf1[f1f2valf1key] = f1f2valf1val
+						f1f3valf1[f1f3valf1key] = f1f3valf1val
 					}
-					f1f2val.Config = f1f2valf1
+					f1f3val.Config = f1f3valf1
 				}
-				f1f2[f1f2key] = f1f2val
+				f1f3[f1f3key] = f1f3val
 			}
-			f1.SyncStates = f1f2
+			f1.SyncStates = f1f3
 		}
 		ko.Status.FirewallStatus = f1
 	} else {
@@ -331,6 +359,31 @@ func (rm *resourceManager) sdkCreate(
 	}
 	if resp.FirewallStatus != nil {
 		f1 := &svcapitypes.FirewallStatus_SDK{}
+		if resp.FirewallStatus.CapacityUsageSummary != nil {
+			f1f0 := &svcapitypes.CapacityUsageSummary{}
+			if resp.FirewallStatus.CapacityUsageSummary.CIDRs != nil {
+				f1f0f0 := &svcapitypes.CIDRSummary{}
+				if resp.FirewallStatus.CapacityUsageSummary.CIDRs.AvailableCIDRCount != nil {
+					f1f0f0.AvailableCIDRCount = resp.FirewallStatus.CapacityUsageSummary.CIDRs.AvailableCIDRCount
+				}
+				if resp.FirewallStatus.CapacityUsageSummary.CIDRs.IPSetReferences != nil {
+					f1f0f0f1 := map[string]*svcapitypes.IPSetMetadata{}
+					for f1f0f0f1key, f1f0f0f1valiter := range resp.FirewallStatus.CapacityUsageSummary.CIDRs.IPSetReferences {
+						f1f0f0f1val := &svcapitypes.IPSetMetadata{}
+						if f1f0f0f1valiter.ResolvedCIDRCount != nil {
+							f1f0f0f1val.ResolvedCIDRCount = f1f0f0f1valiter.ResolvedCIDRCount
+						}
+						f1f0f0f1[f1f0f0f1key] = f1f0f0f1val
+					}
+					f1f0f0.IPSetReferences = f1f0f0f1
+				}
+				if resp.FirewallStatus.CapacityUsageSummary.CIDRs.UtilizedCIDRCount != nil {
+					f1f0f0.UtilizedCIDRCount = resp.FirewallStatus.CapacityUsageSummary.CIDRs.UtilizedCIDRCount
+				}
+				f1f0.CIDRs = f1f0f0
+			}
+			f1.CapacityUsageSummary = f1f0
+		}
 		if resp.FirewallStatus.ConfigurationSyncStateSummary != nil {
 			f1.ConfigurationSyncStateSummary = resp.FirewallStatus.ConfigurationSyncStateSummary
 		}
@@ -338,39 +391,39 @@ func (rm *resourceManager) sdkCreate(
 			f1.Status = resp.FirewallStatus.Status
 		}
 		if resp.FirewallStatus.SyncStates != nil {
-			f1f2 := map[string]*svcapitypes.SyncState{}
-			for f1f2key, f1f2valiter := range resp.FirewallStatus.SyncStates {
-				f1f2val := &svcapitypes.SyncState{}
-				if f1f2valiter.Attachment != nil {
-					f1f2valf0 := &svcapitypes.Attachment{}
-					if f1f2valiter.Attachment.EndpointId != nil {
-						f1f2valf0.EndpointID = f1f2valiter.Attachment.EndpointId
+			f1f3 := map[string]*svcapitypes.SyncState{}
+			for f1f3key, f1f3valiter := range resp.FirewallStatus.SyncStates {
+				f1f3val := &svcapitypes.SyncState{}
+				if f1f3valiter.Attachment != nil {
+					f1f3valf0 := &svcapitypes.Attachment{}
+					if f1f3valiter.Attachment.EndpointId != nil {
+						f1f3valf0.EndpointID = f1f3valiter.Attachment.EndpointId
 					}
-					if f1f2valiter.Attachment.Status != nil {
-						f1f2valf0.Status = f1f2valiter.Attachment.Status
+					if f1f3valiter.Attachment.Status != nil {
+						f1f3valf0.Status = f1f3valiter.Attachment.Status
 					}
-					if f1f2valiter.Attachment.SubnetId != nil {
-						f1f2valf0.SubnetID = f1f2valiter.Attachment.SubnetId
+					if f1f3valiter.Attachment.SubnetId != nil {
+						f1f3valf0.SubnetID = f1f3valiter.Attachment.SubnetId
 					}
-					f1f2val.Attachment = f1f2valf0
+					f1f3val.Attachment = f1f3valf0
 				}
-				if f1f2valiter.Config != nil {
-					f1f2valf1 := map[string]*svcapitypes.PerObjectStatus{}
-					for f1f2valf1key, f1f2valf1valiter := range f1f2valiter.Config {
-						f1f2valf1val := &svcapitypes.PerObjectStatus{}
-						if f1f2valf1valiter.SyncStatus != nil {
-							f1f2valf1val.SyncStatus = f1f2valf1valiter.SyncStatus
+				if f1f3valiter.Config != nil {
+					f1f3valf1 := map[string]*svcapitypes.PerObjectStatus{}
+					for f1f3valf1key, f1f3valf1valiter := range f1f3valiter.Config {
+						f1f3valf1val := &svcapitypes.PerObjectStatus{}
+						if f1f3valf1valiter.SyncStatus != nil {
+							f1f3valf1val.SyncStatus = f1f3valf1valiter.SyncStatus
 						}
-						if f1f2valf1valiter.UpdateToken != nil {
-							f1f2valf1val.UpdateToken = f1f2valf1valiter.UpdateToken
+						if f1f3valf1valiter.UpdateToken != nil {
+							f1f3valf1val.UpdateToken = f1f3valf1valiter.UpdateToken
 						}
-						f1f2valf1[f1f2valf1key] = f1f2valf1val
+						f1f3valf1[f1f3valf1key] = f1f3valf1val
 					}
-					f1f2val.Config = f1f2valf1
+					f1f3val.Config = f1f3valf1
 				}
-				f1f2[f1f2key] = f1f2val
+				f1f3[f1f3key] = f1f3val
 			}
-			f1.SyncStates = f1f2
+			f1.SyncStates = f1f3
 		}
 		ko.Status.FirewallStatus = f1
 	} else {
@@ -457,8 +510,7 @@ func (rm *resourceManager) sdkUpdate(
 	latest *resource,
 	delta *ackcompare.Delta,
 ) (*resource, error) {
-	// TODO(jaypipes): Figure this out...
-	return nil, ackerr.NotImplemented
+	return nil, ackerr.NewTerminalError(ackerr.NotImplemented)
 }
 
 // sdkDelete deletes the supplied resource in the backend AWS service API
@@ -607,6 +659,17 @@ func (rm *resourceManager) updateConditions(
 // and if the exception indicates that it is a Terminal exception
 // 'Terminal' exception are specified in generator configuration
 func (rm *resourceManager) terminalAWSError(err error) bool {
-	// No terminal_errors specified for this resource in generator config
-	return false
+	if err == nil {
+		return false
+	}
+	awsErr, ok := ackerr.AWSError(err)
+	if !ok {
+		return false
+	}
+	switch awsErr.Code() {
+	case "InvalidRequestException":
+		return true
+	default:
+		return false
+	}
 }

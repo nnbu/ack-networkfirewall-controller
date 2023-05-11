@@ -1,8 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-bases:
-  - common
 resources:
+  - common
   - bases/networkfirewall.services.k8s.aws_firewalls.yaml
   - bases/networkfirewall.services.k8s.aws_firewallpolicies.yaml
   - bases/networkfirewall.services.k8s.aws_rulegroups.yaml

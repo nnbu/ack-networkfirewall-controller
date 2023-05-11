@@ -27,8 +27,9 @@ const (
 type ConfigurationSyncState string
 
 const (
-	ConfigurationSyncState_PENDING ConfigurationSyncState = "PENDING"
-	ConfigurationSyncState_IN_SYNC ConfigurationSyncState = "IN_SYNC"
+	ConfigurationSyncState_PENDING              ConfigurationSyncState = "PENDING"
+	ConfigurationSyncState_IN_SYNC              ConfigurationSyncState = "IN_SYNC"
+	ConfigurationSyncState_CAPACITY_CONSTRAINED ConfigurationSyncState = "CAPACITY_CONSTRAINED"
 )
 
 type EncryptionType string
@@ -77,8 +78,9 @@ const (
 type PerObjectSyncStatus string
 
 const (
-	PerObjectSyncStatus_PENDING PerObjectSyncStatus = "PENDING"
-	PerObjectSyncStatus_IN_SYNC PerObjectSyncStatus = "IN_SYNC"
+	PerObjectSyncStatus_PENDING              PerObjectSyncStatus = "PENDING"
+	PerObjectSyncStatus_IN_SYNC              PerObjectSyncStatus = "IN_SYNC"
+	PerObjectSyncStatus_CAPACITY_CONSTRAINED PerObjectSyncStatus = "CAPACITY_CONSTRAINED"
 )
 
 type ResourceManagedStatus string

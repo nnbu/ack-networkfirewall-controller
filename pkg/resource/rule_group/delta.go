@@ -20,12 +20,14 @@ import (
 	"reflect"
 
 	ackcompare "github.com/aws-controllers-k8s/runtime/pkg/compare"
+	acktags "github.com/aws-controllers-k8s/runtime/pkg/tags"
 )
 
 // Hack to avoid import errors during build...
 var (
 	_ = &bytes.Buffer{}
 	_ = &reflect.Method{}
+	_ = &acktags.Tags{}
 )
 
 // newResourceDelta returns a new `ackcompare.Delta` used to compare two
@@ -83,6 +85,17 @@ func newResourceDelta(
 	if ackcompare.HasNilDifference(a.ko.Spec.RuleGroup, b.ko.Spec.RuleGroup) {
 		delta.Add("Spec.RuleGroup", a.ko.Spec.RuleGroup, b.ko.Spec.RuleGroup)
 	} else if a.ko.Spec.RuleGroup != nil && b.ko.Spec.RuleGroup != nil {
+		if ackcompare.HasNilDifference(a.ko.Spec.RuleGroup.ReferenceSets, b.ko.Spec.RuleGroup.ReferenceSets) {
+			delta.Add("Spec.RuleGroup.ReferenceSets", a.ko.Spec.RuleGroup.ReferenceSets, b.ko.Spec.RuleGroup.ReferenceSets)
+		} else if a.ko.Spec.RuleGroup.ReferenceSets != nil && b.ko.Spec.RuleGroup.ReferenceSets != nil {
+			if ackcompare.HasNilDifference(a.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences, b.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences) {
+				delta.Add("Spec.RuleGroup.ReferenceSets.IPSetReferences", a.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences, b.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences)
+			} else if a.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences != nil && b.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences != nil {
+				if !reflect.DeepEqual(a.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences, b.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences) {
+					delta.Add("Spec.RuleGroup.ReferenceSets.IPSetReferences", a.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences, b.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences)
+				}
+			}
+		}
 		if ackcompare.HasNilDifference(a.ko.Spec.RuleGroup.RuleVariables, b.ko.Spec.RuleGroup.RuleVariables) {
 			delta.Add("Spec.RuleGroup.RuleVariables", a.ko.Spec.RuleGroup.RuleVariables, b.ko.Spec.RuleGroup.RuleVariables)
 		} else if a.ko.Spec.RuleGroup.RuleVariables != nil && b.ko.Spec.RuleGroup.RuleVariables != nil {
@@ -186,7 +199,7 @@ func newResourceDelta(
 			}
 		}
 	}
-	if !reflect.DeepEqual(a.ko.Spec.Tags, b.ko.Spec.Tags) {
+	if !ackcompare.MapStringStringEqual(ToACKTags(a.ko.Spec.Tags), ToACKTags(b.ko.Spec.Tags)) {
 		delta.Add("Spec.Tags", a.ko.Spec.Tags, b.ko.Spec.Tags)
 	}
 	if ackcompare.HasNilDifference(a.ko.Spec.Type, b.ko.Spec.Type) {

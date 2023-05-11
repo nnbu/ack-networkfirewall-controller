@@ -35,6 +35,7 @@ import (
 // from more than one firewall policy, and you can use a firewall policy in
 // more than one firewall.
 type RuleGroupSpec struct {
+
 	// The maximum operating resources that this rule group can use. Rule group
 	// capacity is fixed at creation. When you update a rule group, you are limited
 	// to this capacity. When you reference a rule group from a firewall policy,
@@ -46,7 +47,7 @@ type RuleGroupSpec struct {
 	// You can't change or exceed this capacity when you update the rule group,
 	// so leave room for your rule group to grow.
 	//
-	// Capacity for a stateless rule group
+	// # Capacity for a stateless rule group
 	//
 	// For a stateless rule group, the capacity required is the sum of the capacity
 	// requirements of the individual rules that you expect to have in the rule
@@ -55,15 +56,15 @@ type RuleGroupSpec struct {
 	// To calculate the capacity requirement of a single rule, multiply the capacity
 	// requirement values of each of the rule's match settings:
 	//
-	//    * A match setting with no criteria specified has a value of 1.
+	//   - A match setting with no criteria specified has a value of 1.
 	//
-	//    * A match setting with Any specified has a value of 1.
+	//   - A match setting with Any specified has a value of 1.
 	//
-	//    * All other match settings have a value equal to the number of elements
-	//    provided in the setting. For example, a protocol setting ["UDP"] and a
-	//    source setting ["10.0.0.0/24"] each have a value of 1. A protocol setting
-	//    ["UDP","TCP"] has a value of 2. A source setting ["10.0.0.0/24","10.0.0.1/24","10.0.0.2/24"]
-	//    has a value of 3.
+	//   - All other match settings have a value equal to the number of elements
+	//     provided in the setting. For example, a protocol setting ["UDP"] and a
+	//     source setting ["10.0.0.0/24"] each have a value of 1. A protocol setting
+	//     ["UDP","TCP"] has a value of 2. A source setting ["10.0.0.0/24","10.0.0.1/24","10.0.0.2/24"]
+	//     has a value of 3.
 	//
 	// A rule with no criteria specified in any of its match settings has a capacity
 	// requirement of 1. A rule with protocol setting ["UDP","TCP"], source setting
@@ -71,7 +72,7 @@ type RuleGroupSpec struct {
 	// no specification for each of the other match settings has a capacity requirement
 	// of 6.
 	//
-	// Capacity for a stateful rule group
+	// # Capacity for a stateful rule group
 	//
 	// For a stateful rule group, the minimum capacity required is the number of
 	// individual rules that you expect to have in the rule group.

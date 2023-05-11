@@ -31,6 +31,7 @@ import (
 // traffic, is provided in the corresponding FirewallStatus. You can retrieve
 // both objects by calling DescribeFirewall.
 type FirewallSpec struct {
+
 	// A flag indicating whether it is possible to delete the firewall. A setting
 	// of TRUE indicates that the firewall is protected against deletion. Use this
 	// setting to protect against accidentally deleting a firewall that is in use.

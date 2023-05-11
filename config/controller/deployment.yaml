@@ -1,26 +1,25 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  labels:
-    control-plane: controller
   name: ack-system
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: networkfirewall-controller
+  name: ack-networkfirewall-controller
   namespace: ack-system
   labels:
-    control-plane: controller
+    app.kubernetes.io/name: ack-networkfirewall-controller
+    app.kubernetes.io/part-of: ack-system
 spec:
   selector:
     matchLabels:
-      control-plane: controller
+      app.kubernetes.io/name: ack-networkfirewall-controller
   replicas: 1
   template:
     metadata:
       labels:
-        control-plane: controller
+        app.kubernetes.io/name: ack-networkfirewall-controller
     spec:
       containers:
       - command:
@@ -74,6 +73,9 @@ spec:
           capabilities:
             drop:
               - ALL
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       terminationGracePeriodSeconds: 10
       serviceAccountName: ack-networkfirewall-controller
       hostIPC: false
