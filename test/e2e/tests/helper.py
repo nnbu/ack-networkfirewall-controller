@@ -65,6 +65,15 @@ class NetworkFirewallValidator:
         except self.networkfirewall_client.exceptions.ResourceNotFoundException:
             return None
 
+    def assert_network_firewall_logs(self, firewall_name: str, want_num_logs: int):
+        got_num_logs = 0
+        try:
+            aws_res = self.networkfirewall_client.describe_logging_configuration(FirewallName=firewall_name)
+            got_num_logs = len(aws_res["LoggingConfiguration"]["LogDestinationConfigs"])
+        except self.networkfirewall_client.exceptions.ClientError:
+            pass
+        assert got_num_logs is want_num_logs
+
     def wait_for_firewall_creation_or_die(self, firewall_name: str, desired_state: str, timeout_sec):
         while True:
             now = datetime.datetime.now()

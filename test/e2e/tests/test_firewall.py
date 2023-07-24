@@ -122,6 +122,65 @@ def create_adopted_resource_firewall(firewall_name):
 @service_marker
 @pytest.mark.canary
 class TestNetworkFirewall:
+    def test_create_delete(self, networkfirewall_client, simple_firewall):
+        (fw, cr) = simple_firewall
+
+        firewall_config = cr["status"]["firewall"]
+        firwall_name = firewall_config["firewallName"]
+
+        networkfirewall_validator = NetworkFirewallValidator(networkfirewall_client)
+        # Check Network Firewall comes to READY state
+        networkfirewall_validator.wait_for_firewall_creation_or_die(firwall_name, "READY", TIMEOUT_SECONDS)
+
+        # Check Network Firewall logging configuration exist in AWS
+        networkfirewall_validator.assert_network_firewall_logs(firwall_name, 1)
+
+        # Remove Network Firewall logging configuration
+        updates = {
+            "spec": {
+                "loggingConfiguration": None
+            }
+        }
+
+        k8s.patch_custom_resource(fw, updates)
+        time.sleep(UPDATE_WAIT_AFTER_SECONDS)
+        networkfirewall_validator.assert_network_firewall_logs(firwall_name, 0)
+
+        # Update Network Firewall logging configuration
+        resources = get_bootstrap_resources()
+        updates = {
+            "spec": {
+                "loggingConfiguration": {
+                    "logDestinationConfigs": [
+                        {
+                            "logDestination": {
+                                "bucketName": resources.LogsBucket.name
+                            },
+                            "logDestinationType": "S3",
+                            "logType": "ALERT"
+                        },
+                        {
+                            "logDestination": {
+                                "bucketName": resources.LogsBucket.name
+                            },
+                            "logDestinationType": "S3",
+                            "logType": "FLOW"
+                        }
+                    ]
+                }
+            }
+        }
+
+        k8s.patch_custom_resource(fw, updates)
+        time.sleep(UPDATE_WAIT_AFTER_SECONDS)
+        networkfirewall_validator.assert_network_firewall_logs(firwall_name, 2)
+
+        # Delete k8s resource
+        k8s.delete_custom_resource(fw)
+
+        # Check Firewall no longer exists in AWS
+        networkfirewall_validator.wait_for_firewall_deletion_or_die(firwall_name, TIMEOUT_SECONDS)
+        
     def test_create_delete_using_adopted_resource(self, networkfirewall_client, simple_firewall):
         (fw, cr) = simple_firewall
 

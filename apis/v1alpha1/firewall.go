@@ -54,6 +54,9 @@ type FirewallSpec struct {
 	// modifying the firewall policy for a firewall that is in use. When you create
 	// a firewall, the operation initializes this setting to TRUE.
 	FirewallPolicyChangeProtection *bool `json:"firewallPolicyChangeProtection,omitempty"`
+	// Defines how Network Firewall performs logging for a firewall. If you omit
+	// this setting, Network Firewall disables logging for the firewall.
+	LoggingConfiguration *LoggingConfiguration `json:"loggingConfiguration,omitempty"`
 	// A setting indicating whether the firewall is protected against changes to
 	// the subnet associations. Use this setting to protect against accidentally
 	// modifying the subnet associations for a firewall that is in use. When you

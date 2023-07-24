@@ -284,6 +284,26 @@ type IPSetReference struct {
 	ReferenceARN *string `json:"referenceARN,omitempty"`
 }
 
+// Defines where Network Firewall sends logs for the firewall for one log type.
+// This is used in LoggingConfiguration. You can send each type of log to an
+// Amazon S3 bucket, a CloudWatch log group, or a Kinesis Data Firehose delivery
+// stream.
+//
+// Network Firewall generates logs for stateful rule groups. You can save alert
+// and flow log types. The stateful rules engine records flow logs for all network
+// traffic that it receives. It records alert logs for traffic that matches
+// stateful rules that have the rule action set to DROP or ALERT.
+type LogDestinationConfig struct {
+	LogDestination     map[string]*string `json:"logDestination,omitempty"`
+	LogDestinationType *string            `json:"logDestinationType,omitempty"`
+	LogType            *string            `json:"logType,omitempty"`
+}
+
+// Defines how Network Firewall performs logging for a Firewall.
+type LoggingConfiguration struct {
+	LogDestinationConfigs []*LogDestinationConfig `json:"logDestinationConfigs,omitempty"`
+}
+
 // Criteria for Network Firewall to use to inspect an individual packet in stateless
 // rule inspection. Each match attributes set can include one or more items
 // such as IP address, CIDR range, port number, protocol, and TCP flags.

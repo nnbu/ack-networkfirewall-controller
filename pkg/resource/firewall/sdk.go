@@ -261,6 +261,9 @@ func (rm *resourceManager) sdkFind(
 		}
 	}
 
+	if err := rm.addLoggingConfigToSpec(ctx, r, ko); err != nil {
+		return nil, err
+	}
 	return &resource{ko}, nil
 }
 
@@ -466,6 +469,9 @@ func (rm *resourceManager) sdkCreate(
 	}
 
 	rm.setStatusDefaults(ko)
+	if err := rm.createLoggingConfig(ctx, desired); err != nil {
+		return nil, err
+	}
 	return &resource{ko}, nil
 }
 
@@ -561,6 +567,9 @@ func (rm *resourceManager) sdkDelete(
 	defer func() {
 		exit(err)
 	}()
+	if err := rm.deleteLoggingConfig(ctx, r); err != nil {
+		return nil, err
+	}
 	input, err := rm.newDeleteRequestPayload(r)
 	if err != nil {
 		return nil, err
@@ -578,6 +587,7 @@ func (rm *resourceManager) sdkDelete(
 			return r, requeueWaitWhileDeleting
 		}
 	}
+
 	return nil, err
 }
 
@@ -710,4 +720,73 @@ func (rm *resourceManager) terminalAWSError(err error) bool {
 	default:
 		return false
 	}
+}
+
+// newLoggingConfiguration returns a LoggingConfiguration object
+// with each the field set by the resource's corresponding spec field.
+func (rm *resourceManager) newLoggingConfiguration(
+	r *resource,
+) *svcsdk.LoggingConfiguration {
+	res := &svcsdk.LoggingConfiguration{}
+
+	if r.ko.Spec.LoggingConfiguration.LogDestinationConfigs != nil {
+		resf0 := []*svcsdk.LogDestinationConfig{}
+		for _, resf0iter := range r.ko.Spec.LoggingConfiguration.LogDestinationConfigs {
+			resf0elem := &svcsdk.LogDestinationConfig{}
+			if resf0iter.LogDestination != nil {
+				resf0elemf0 := map[string]*string{}
+				for resf0elemf0key, resf0elemf0valiter := range resf0iter.LogDestination {
+					var resf0elemf0val string
+					resf0elemf0val = *resf0elemf0valiter
+					resf0elemf0[resf0elemf0key] = &resf0elemf0val
+				}
+				resf0elem.SetLogDestination(resf0elemf0)
+			}
+			if resf0iter.LogDestinationType != nil {
+				resf0elem.SetLogDestinationType(*resf0iter.LogDestinationType)
+			}
+			if resf0iter.LogType != nil {
+				resf0elem.SetLogType(*resf0iter.LogType)
+			}
+			resf0 = append(resf0, resf0elem)
+		}
+		res.SetLogDestinationConfigs(resf0)
+	}
+
+	return res
+}
+
+// setResourceLoggingConfiguration sets the `LoggingConfiguration` spec field
+// given the output of a `DescribeLoggingConfiguration` operation.
+func (rm *resourceManager) setResourceLoggingConfiguration(
+	r *resource,
+	resp *svcsdk.DescribeLoggingConfigurationOutput,
+) *svcapitypes.LoggingConfiguration {
+	res := &svcapitypes.LoggingConfiguration{}
+
+	if resp.LoggingConfiguration.LogDestinationConfigs != nil {
+		resf0 := []*svcapitypes.LogDestinationConfig{}
+		for _, resf0iter := range resp.LoggingConfiguration.LogDestinationConfigs {
+			resf0elem := &svcapitypes.LogDestinationConfig{}
+			if resf0iter.LogDestination != nil {
+				resf0elemf0 := map[string]*string{}
+				for resf0elemf0key, resf0elemf0valiter := range resf0iter.LogDestination {
+					var resf0elemf0val string
+					resf0elemf0val = *resf0elemf0valiter
+					resf0elemf0[resf0elemf0key] = &resf0elemf0val
+				}
+				resf0elem.LogDestination = resf0elemf0
+			}
+			if resf0iter.LogDestinationType != nil {
+				resf0elem.LogDestinationType = resf0iter.LogDestinationType
+			}
+			if resf0iter.LogType != nil {
+				resf0elem.LogType = resf0iter.LogType
+			}
+			resf0 = append(resf0, resf0elem)
+		}
+		res.LogDestinationConfigs = resf0
+	}
+
+	return res
 }

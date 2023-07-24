@@ -97,6 +97,17 @@ func newResourceDelta(
 			delta.Add("Spec.FirewallPolicyChangeProtection", a.ko.Spec.FirewallPolicyChangeProtection, b.ko.Spec.FirewallPolicyChangeProtection)
 		}
 	}
+	if ackcompare.HasNilDifference(a.ko.Spec.LoggingConfiguration, b.ko.Spec.LoggingConfiguration) {
+		delta.Add("Spec.LoggingConfiguration", a.ko.Spec.LoggingConfiguration, b.ko.Spec.LoggingConfiguration)
+	} else if a.ko.Spec.LoggingConfiguration != nil && b.ko.Spec.LoggingConfiguration != nil {
+		if len(a.ko.Spec.LoggingConfiguration.LogDestinationConfigs) != len(b.ko.Spec.LoggingConfiguration.LogDestinationConfigs) {
+			delta.Add("Spec.LoggingConfiguration.LogDestinationConfigs", a.ko.Spec.LoggingConfiguration.LogDestinationConfigs, b.ko.Spec.LoggingConfiguration.LogDestinationConfigs)
+		} else if len(a.ko.Spec.LoggingConfiguration.LogDestinationConfigs) > 0 {
+			if !reflect.DeepEqual(a.ko.Spec.LoggingConfiguration.LogDestinationConfigs, b.ko.Spec.LoggingConfiguration.LogDestinationConfigs) {
+				delta.Add("Spec.LoggingConfiguration.LogDestinationConfigs", a.ko.Spec.LoggingConfiguration.LogDestinationConfigs, b.ko.Spec.LoggingConfiguration.LogDestinationConfigs)
+			}
+		}
+	}
 	if ackcompare.HasNilDifference(a.ko.Spec.SubnetChangeProtection, b.ko.Spec.SubnetChangeProtection) {
 		delta.Add("Spec.SubnetChangeProtection", a.ko.Spec.SubnetChangeProtection, b.ko.Spec.SubnetChangeProtection)
 	} else if a.ko.Spec.SubnetChangeProtection != nil && b.ko.Spec.SubnetChangeProtection != nil {

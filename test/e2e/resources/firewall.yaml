@@ -6,6 +6,12 @@ spec:
   deleteProtection: false
   firewallName: $FIREWALL_NAME
   firewallPolicyARN: $FIREWALL_POLICY_ARN
+  loggingConfiguration:
+    logDestinationConfigs:
+    - logDestination:
+        "bucketName": $LOG_DESTINATION
+      logDestinationType: S3
+      logType: FLOW
   subnetMappings:
   - subnetID: $SUBNET_ID
   vpcID: $VPC_ID
