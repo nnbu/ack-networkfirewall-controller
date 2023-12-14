@@ -20,6 +20,8 @@ type AttachmentStatus string
 const (
 	AttachmentStatus_CREATING AttachmentStatus = "CREATING"
 	AttachmentStatus_DELETING AttachmentStatus = "DELETING"
+	AttachmentStatus_FAILED   AttachmentStatus = "FAILED"
+	AttachmentStatus_ERROR    AttachmentStatus = "ERROR"
 	AttachmentStatus_SCALING  AttachmentStatus = "SCALING"
 	AttachmentStatus_READY    AttachmentStatus = "READY"
 )
@@ -52,6 +54,21 @@ type GeneratedRulesType string
 const (
 	GeneratedRulesType_ALLOWLIST GeneratedRulesType = "ALLOWLIST"
 	GeneratedRulesType_DENYLIST  GeneratedRulesType = "DENYLIST"
+)
+
+type IDentifiedType string
+
+const (
+	IDentifiedType_STATELESS_RULE_FORWARDING_ASYMMETRICALLY IDentifiedType = "STATELESS_RULE_FORWARDING_ASYMMETRICALLY"
+	IDentifiedType_STATELESS_RULE_CONTAINS_TCP_FLAGS        IDentifiedType = "STATELESS_RULE_CONTAINS_TCP_FLAGS"
+)
+
+type IPAddressType string
+
+const (
+	IPAddressType_DUALSTACK IPAddressType = "DUALSTACK"
+	IPAddressType_IPV4      IPAddressType = "IPV4"
+	IPAddressType_IPV6      IPAddressType = "IPV6"
 )
 
 type LogDestinationType string
@@ -102,6 +119,15 @@ type ResourceStatus string
 const (
 	ResourceStatus_ACTIVE   ResourceStatus = "ACTIVE"
 	ResourceStatus_DELETING ResourceStatus = "DELETING"
+	ResourceStatus_ERROR    ResourceStatus = "ERROR"
+)
+
+type RevocationCheckAction string
+
+const (
+	RevocationCheckAction_PASS   RevocationCheckAction = "PASS"
+	RevocationCheckAction_DROP   RevocationCheckAction = "DROP"
+	RevocationCheckAction_REJECT RevocationCheckAction = "REJECT"
 )
 
 type RuleGroupType string
@@ -121,9 +147,10 @@ const (
 type StatefulAction string
 
 const (
-	StatefulAction_PASS  StatefulAction = "PASS"
-	StatefulAction_DROP  StatefulAction = "DROP"
-	StatefulAction_ALERT StatefulAction = "ALERT"
+	StatefulAction_PASS   StatefulAction = "PASS"
+	StatefulAction_DROP   StatefulAction = "DROP"
+	StatefulAction_ALERT  StatefulAction = "ALERT"
+	StatefulAction_REJECT StatefulAction = "REJECT"
 )
 
 type StatefulRuleDirection string
@@ -155,6 +182,14 @@ const (
 	StatefulRuleProtocol_TFTP   StatefulRuleProtocol = "TFTP"
 	StatefulRuleProtocol_NTP    StatefulRuleProtocol = "NTP"
 	StatefulRuleProtocol_DHCP   StatefulRuleProtocol = "DHCP"
+)
+
+type StreamExceptionPolicy string
+
+const (
+	StreamExceptionPolicy_DROP     StreamExceptionPolicy = "DROP"
+	StreamExceptionPolicy_CONTINUE StreamExceptionPolicy = "CONTINUE"
+	StreamExceptionPolicy_REJECT   StreamExceptionPolicy = "REJECT"
 )
 
 type TCPFlag string

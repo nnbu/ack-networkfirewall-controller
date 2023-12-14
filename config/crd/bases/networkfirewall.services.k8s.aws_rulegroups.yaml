@@ -45,6 +45,13 @@ spec:
               a rule group from more than one firewall policy, and you can use a firewall
               policy in more than one firewall."
             properties:
+              analyzeRuleGroup:
+                description: Indicates whether you want Network Firewall to analyze
+                  the stateless rules in the rule group for rule behavior such as
+                  asymmetric routing. If set to TRUE, Network Firewall runs the analysis
+                  and then creates the rule group for you. To run the stateless rule
+                  group analyzer without creating the rule group, set DryRun to TRUE.
+                type: boolean
               capacity:
                 description: "The maximum operating resources that this rule group
                   can use. Rule group capacity is fixed at creation. When you update
@@ -113,18 +120,19 @@ spec:
                           description: "Configures one or more IP set references for
                             a Suricata-compatible rule group. This is used in CreateRuleGroup
                             or UpdateRuleGroup. An IP set reference is a rule variable
-                            that references a resource that you create and manage
-                            in another Amazon Web Services service, such as an Amazon
+                            that references resources that you create and manage in
+                            another Amazon Web Services service, such as an Amazon
                             VPC prefix list. Network Firewall IP set references enable
                             you to dynamically update the contents of your rules.
-                            When you create, update, or delete the IP set you are
+                            When you create, update, or delete the resource you are
                             referencing in your rule, Network Firewall automatically
                             updates the rule's content with the changes. For more
                             information about IP set references in Network Firewall,
                             see Using IP set references (https://docs.aws.amazon.com/network-firewall/latest/developerguide/rule-groups-ip-set-references)
                             in the Network Firewall Developer Guide. \n Network Firewall
-                            currently supports only Amazon VPC prefix lists (https://docs.aws.amazon.com/vpc/latest/userguide/managed-prefix-lists.html)
-                            as IP set references."
+                            currently supports Amazon VPC prefix lists (https://docs.aws.amazon.com/vpc/latest/userguide/managed-prefix-lists.html)
+                            and resource groups (https://docs.aws.amazon.com/network-firewall/latest/developerguide/rule-groups-ip-set-references.html#rule-groups-referencing-resource-groups)
+                            in IP set references."
                           properties:
                             referenceARN:
                               type: string
@@ -197,7 +205,7 @@ spec:
                             use in a stateful rule group. Use this option to specify
                             a simple Suricata rule with protocol, source and destination,
                             ports, direction, and rule options. For information about
-                            the Suricata Rules format, see Rules Format (https://suricata.readthedocs.io/en/suricata-5.0.0/rules/intro.html#).
+                            the Suricata Rules format, see Rules Format (https://suricata.readthedocs.io/en/suricata-6.0.9/rules/intro.html).
                           properties:
                             action:
                               type: string
@@ -532,6 +540,28 @@ spec:
                   with the RuleGroup, define the rule group. You can retrieve all
                   objects for a rule group by calling DescribeRuleGroup.
                 properties:
+                  analysisResults:
+                    items:
+                      description: The analysis result for Network Firewall's stateless
+                        rule group analyzer. Every time you call CreateRuleGroup,
+                        UpdateRuleGroup, or DescribeRuleGroup on a stateless rule
+                        group, Network Firewall analyzes the stateless rule groups
+                        in your account and identifies the rules that might adversely
+                        effect your firewall's functionality. For example, if Network
+                        Firewall detects a rule that's routing traffic asymmetrically,
+                        which impacts the service's ability to properly process traffic,
+                        the service includes the rule in a list of analysis results.
+                      properties:
+                        analysisDetail:
+                          type: string
+                        identifiedRuleIDs:
+                          items:
+                            type: string
+                          type: array
+                        identifiedType:
+                          type: string
+                      type: object
+                    type: array
                   capacity:
                     format: int64
                     type: integer

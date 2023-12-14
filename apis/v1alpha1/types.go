@@ -43,12 +43,27 @@ type Address struct {
 	AddressDefinition *string `json:"addressDefinition,omitempty"`
 }
 
+// The analysis result for Network Firewall's stateless rule group analyzer.
+// Every time you call CreateRuleGroup, UpdateRuleGroup, or DescribeRuleGroup
+// on a stateless rule group, Network Firewall analyzes the stateless rule groups
+// in your account and identifies the rules that might adversely effect your
+// firewall's functionality. For example, if Network Firewall detects a rule
+// that's routing traffic asymmetrically, which impacts the service's ability
+// to properly process traffic, the service includes the rule in a list of analysis
+// results.
+type AnalysisResult struct {
+	AnalysisDetail    *string   `json:"analysisDetail,omitempty"`
+	IDentifiedRuleIDs []*string `json:"identifiedRuleIDs,omitempty"`
+	IDentifiedType    *string   `json:"identifiedType,omitempty"`
+}
+
 // The configuration and status for a single subnet that you've specified for
 // use by the Network Firewall firewall. This is part of the FirewallStatus.
 type Attachment struct {
-	EndpointID *string `json:"endpointID,omitempty"`
-	Status     *string `json:"status,omitempty"`
-	SubnetID   *string `json:"subnetID,omitempty"`
+	EndpointID    *string `json:"endpointID,omitempty"`
+	Status        *string `json:"status,omitempty"`
+	StatusMessage *string `json:"statusMessage,omitempty"`
+	SubnetID      *string `json:"subnetID,omitempty"`
 }
 
 // Summarizes the CIDR blocks used by the IP set references in a firewall. Network
@@ -170,7 +185,10 @@ type FirewallPolicyResponse struct {
 // This, along with FirewallPolicyResponse, define the policy. You can retrieve
 // all objects for a firewall policy by calling DescribeFirewallPolicy.
 type FirewallPolicy_SDK struct {
-	StatefulDefaultActions []*string `json:"statefulDefaultActions,omitempty"`
+	// Contains variables that you can use to override default Suricata settings
+	// in your firewall policy.
+	PolicyVariables        *PolicyVariables `json:"policyVariables,omitempty"`
+	StatefulDefaultActions []*string        `json:"statefulDefaultActions,omitempty"`
 	// Configuration settings for the handling of the stateful rule groups in a
 	// firewall policy.
 	StatefulEngineOptions           *StatefulEngineOptions         `json:"statefulEngineOptions,omitempty"`
@@ -179,6 +197,7 @@ type FirewallPolicy_SDK struct {
 	StatelessDefaultActions         []*string                      `json:"statelessDefaultActions,omitempty"`
 	StatelessFragmentDefaultActions []*string                      `json:"statelessFragmentDefaultActions,omitempty"`
 	StatelessRuleGroupReferences    []*StatelessRuleGroupReference `json:"statelessRuleGroupReferences,omitempty"`
+	TLSInspectionConfigurationARN   *string                        `json:"tlsInspectionConfigurationARN,omitempty"`
 }
 
 // Detailed information about the current status of a Firewall. You can retrieve
@@ -249,17 +268,18 @@ type IPSetMetadata struct {
 
 // Configures one or more IP set references for a Suricata-compatible rule group.
 // This is used in CreateRuleGroup or UpdateRuleGroup. An IP set reference is
-// a rule variable that references a resource that you create and manage in
-// another Amazon Web Services service, such as an Amazon VPC prefix list. Network
-// Firewall IP set references enable you to dynamically update the contents
-// of your rules. When you create, update, or delete the IP set you are referencing
-// in your rule, Network Firewall automatically updates the rule's content with
-// the changes. For more information about IP set references in Network Firewall,
+// a rule variable that references resources that you create and manage in another
+// Amazon Web Services service, such as an Amazon VPC prefix list. Network Firewall
+// IP set references enable you to dynamically update the contents of your rules.
+// When you create, update, or delete the resource you are referencing in your
+// rule, Network Firewall automatically updates the rule's content with the
+// changes. For more information about IP set references in Network Firewall,
 // see Using IP set references (https://docs.aws.amazon.com/network-firewall/latest/developerguide/rule-groups-ip-set-references)
 // in the Network Firewall Developer Guide.
 //
-// Network Firewall currently supports only Amazon VPC prefix lists (https://docs.aws.amazon.com/vpc/latest/userguide/managed-prefix-lists.html)
-// as IP set references.
+// Network Firewall currently supports Amazon VPC prefix lists (https://docs.aws.amazon.com/vpc/latest/userguide/managed-prefix-lists.html)
+// and resource groups (https://docs.aws.amazon.com/network-firewall/latest/developerguide/rule-groups-ip-set-references.html#rule-groups-referencing-resource-groups)
+// in IP set references.
 type IPSetReference struct {
 	ReferenceARN *string `json:"referenceARN,omitempty"`
 }
@@ -285,6 +305,12 @@ type MatchAttributes struct {
 type PerObjectStatus struct {
 	SyncStatus  *string `json:"syncStatus,omitempty"`
 	UpdateToken *string `json:"updateToken,omitempty"`
+}
+
+// Contains variables that you can use to override default Suricata settings
+// in your firewall policy.
+type PolicyVariables struct {
+	RuleVariables map[string]*IPSet `json:"ruleVariables,omitempty"`
 }
 
 // A single port range specification. This is used for source and destination
@@ -335,9 +361,10 @@ type RuleGroupMetadata struct {
 // define the rule group. You can retrieve all objects for a rule group by calling
 // DescribeRuleGroup.
 type RuleGroupResponse struct {
-	Capacity         *int64  `json:"capacity,omitempty"`
-	ConsumedCapacity *int64  `json:"consumedCapacity,omitempty"`
-	Description      *string `json:"description,omitempty"`
+	AnalysisResults  []*AnalysisResult `json:"analysisResults,omitempty"`
+	Capacity         *int64            `json:"capacity,omitempty"`
+	ConsumedCapacity *int64            `json:"consumedCapacity,omitempty"`
+	Description      *string           `json:"description,omitempty"`
 	// A complex type that contains optional Amazon Web Services Key Management
 	// Service (KMS) encryption settings for your Network Firewall resources. Your
 	// data is encrypted by default with an Amazon Web Services owned key that Amazon
@@ -446,6 +473,45 @@ type RulesSourceList struct {
 	Targets            []*string `json:"targets,omitempty"`
 }
 
+// Any Certificate Manager (ACM) Secure Sockets Layer/Transport Layer Security
+// (SSL/TLS) server certificate that's associated with a ServerCertificateConfiguration.
+// Used in a TLSInspectionConfiguration for inspection of inbound traffic to
+// your firewall. You must request or import a SSL/TLS certificate into ACM
+// for each domain Network Firewall needs to decrypt and inspect. Network Firewall
+// uses the SSL/TLS certificates to decrypt specified inbound SSL/TLS traffic
+// going to your firewall. For information about working with certificates in
+// Certificate Manager, see Request a public certificate (https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-request-public.html)
+// or Importing certificates (https://docs.aws.amazon.com/acm/latest/userguide/import-certificate.html)
+// in the Certificate Manager User Guide.
+type ServerCertificate struct {
+	ResourceARN *string `json:"resourceARN,omitempty"`
+}
+
+// Configures the Certificate Manager certificates and scope that Network Firewall
+// uses to decrypt and re-encrypt traffic using a TLSInspectionConfiguration.
+// You can configure ServerCertificates for inbound SSL/TLS inspection, a CertificateAuthorityArn
+// for outbound SSL/TLS inspection, or both. For information about working with
+// certificates for TLS inspection, see Using SSL/TLS server certficiates with
+// TLS inspection configurations (https://docs.aws.amazon.com/network-firewall/latest/developerguide/tls-inspection-certificate-requirements.html)
+// in the Network Firewall Developer Guide.
+//
+// If a server certificate that's associated with your TLSInspectionConfiguration
+// is revoked, deleted, or expired it can result in client-side TLS errors.
+type ServerCertificateConfiguration struct {
+	CertificateAuthorityARN *string `json:"certificateAuthorityARN,omitempty"`
+}
+
+// Settings that define the Secure Sockets Layer/Transport Layer Security (SSL/TLS)
+// traffic that Network Firewall should decrypt for inspection by the stateful
+// rule engine.
+type ServerCertificateScope struct {
+	DestinationPorts []*PortRange `json:"destinationPorts,omitempty"`
+	Destinations     []*Address   `json:"destinations,omitempty"`
+	Protocols        []*int64     `json:"protocols,omitempty"`
+	SourcePorts      []*PortRange `json:"sourcePorts,omitempty"`
+	Sources          []*Address   `json:"sources,omitempty"`
+}
+
 // High-level information about the managed rule group that your own rule group
 // is copied from. You can use the the metadata to track version updates made
 // to the originating rule group. You can retrieve all objects for a rule group
@@ -458,13 +524,14 @@ type SourceMetadata struct {
 // Configuration settings for the handling of the stateful rule groups in a
 // firewall policy.
 type StatefulEngineOptions struct {
-	RuleOrder *string `json:"ruleOrder,omitempty"`
+	RuleOrder             *string `json:"ruleOrder,omitempty"`
+	StreamExceptionPolicy *string `json:"streamExceptionPolicy,omitempty"`
 }
 
 // A single Suricata rules specification, for use in a stateful rule group.
 // Use this option to specify a simple Suricata rule with protocol, source and
 // destination, ports, direction, and rule options. For information about the
-// Suricata Rules format, see Rules Format (https://suricata.readthedocs.io/en/suricata-5.0.0/rules/intro.html#).
+// Suricata Rules format, see Rules Format (https://suricata.readthedocs.io/en/suricata-6.0.9/rules/intro.html).
 type StatefulRule struct {
 	Action *string `json:"action,omitempty"`
 	// The basic rule criteria for Network Firewall to use to inspect packet headers
@@ -524,7 +591,8 @@ type StatelessRulesAndCustomActions struct {
 // instance of the associated firewall in each subnet that you specify, to filter
 // traffic in the subnet's Availability Zone.
 type SubnetMapping struct {
-	SubnetID *string `json:"subnetID,omitempty"`
+	IPAddressType *string `json:"iPAddressType,omitempty"`
+	SubnetID      *string `json:"subnetID,omitempty"`
 }
 
 // The status of the firewall endpoint and firewall policy configuration for
@@ -553,6 +621,45 @@ type SyncState struct {
 type TCPFlagField struct {
 	Flags []*string `json:"flags,omitempty"`
 	Masks []*string `json:"masks,omitempty"`
+}
+
+// Contains metadata about an Certificate Manager certificate.
+type TLSCertificateData struct {
+	CertificateARN    *string `json:"certificateARN,omitempty"`
+	CertificateSerial *string `json:"certificateSerial,omitempty"`
+	Status            *string `json:"status,omitempty"`
+}
+
+// High-level information about a TLS inspection configuration, returned by
+// ListTLSInspectionConfigurations. You can use the information provided in
+// the metadata to retrieve and manage a TLS configuration.
+type TLSInspectionConfigurationMetadata struct {
+	ARN  *string `json:"arn,omitempty"`
+	Name *string `json:"name,omitempty"`
+}
+
+// The high-level properties of a TLS inspection configuration. This, along
+// with the TLSInspectionConfiguration, define the TLS inspection configuration.
+// You can retrieve all objects for a TLS inspection configuration by calling
+// DescribeTLSInspectionConfiguration.
+type TLSInspectionConfigurationResponse struct {
+	Description *string `json:"description,omitempty"`
+	// A complex type that contains optional Amazon Web Services Key Management
+	// Service (KMS) encryption settings for your Network Firewall resources. Your
+	// data is encrypted by default with an Amazon Web Services owned key that Amazon
+	// Web Services owns and manages for you. You can use either the Amazon Web
+	// Services owned key, or provide your own customer managed key. To learn more
+	// about KMS encryption of your Network Firewall resources, see Encryption at
+	// rest with Amazon Web Services Key Managment Service (https://docs.aws.amazon.com/kms/latest/developerguide/kms-encryption-at-rest.html)
+	// in the Network Firewall Developer Guide.
+	EncryptionConfiguration          *EncryptionConfiguration `json:"encryptionConfiguration,omitempty"`
+	LastModifiedTime                 *metav1.Time             `json:"lastModifiedTime,omitempty"`
+	NumberOfAssociations             *int64                   `json:"numberOfAssociations,omitempty"`
+	TLSInspectionConfigurationARN    *string                  `json:"tlsInspectionConfigurationARN,omitempty"`
+	TLSInspectionConfigurationID     *string                  `json:"tlsInspectionConfigurationID,omitempty"`
+	TLSInspectionConfigurationName   *string                  `json:"tlsInspectionConfigurationName,omitempty"`
+	TLSInspectionConfigurationStatus *string                  `json:"tlsInspectionConfigurationStatus,omitempty"`
+	Tags                             []*Tag                   `json:"tags,omitempty"`
 }
 
 // A key:value pair associated with an Amazon Web Services resource. The key:value

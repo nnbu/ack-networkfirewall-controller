@@ -43,6 +43,13 @@ func newResourceDelta(
 		return delta
 	}
 
+	if ackcompare.HasNilDifference(a.ko.Spec.AnalyzeRuleGroup, b.ko.Spec.AnalyzeRuleGroup) {
+		delta.Add("Spec.AnalyzeRuleGroup", a.ko.Spec.AnalyzeRuleGroup, b.ko.Spec.AnalyzeRuleGroup)
+	} else if a.ko.Spec.AnalyzeRuleGroup != nil && b.ko.Spec.AnalyzeRuleGroup != nil {
+		if *a.ko.Spec.AnalyzeRuleGroup != *b.ko.Spec.AnalyzeRuleGroup {
+			delta.Add("Spec.AnalyzeRuleGroup", a.ko.Spec.AnalyzeRuleGroup, b.ko.Spec.AnalyzeRuleGroup)
+		}
+	}
 	if ackcompare.HasNilDifference(a.ko.Spec.Capacity, b.ko.Spec.Capacity) {
 		delta.Add("Spec.Capacity", a.ko.Spec.Capacity, b.ko.Spec.Capacity)
 	} else if a.ko.Spec.Capacity != nil && b.ko.Spec.Capacity != nil {
@@ -88,9 +95,9 @@ func newResourceDelta(
 		if ackcompare.HasNilDifference(a.ko.Spec.RuleGroup.ReferenceSets, b.ko.Spec.RuleGroup.ReferenceSets) {
 			delta.Add("Spec.RuleGroup.ReferenceSets", a.ko.Spec.RuleGroup.ReferenceSets, b.ko.Spec.RuleGroup.ReferenceSets)
 		} else if a.ko.Spec.RuleGroup.ReferenceSets != nil && b.ko.Spec.RuleGroup.ReferenceSets != nil {
-			if ackcompare.HasNilDifference(a.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences, b.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences) {
+			if len(a.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences) != len(b.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences) {
 				delta.Add("Spec.RuleGroup.ReferenceSets.IPSetReferences", a.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences, b.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences)
-			} else if a.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences != nil && b.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences != nil {
+			} else if len(a.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences) > 0 {
 				if !reflect.DeepEqual(a.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences, b.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences) {
 					delta.Add("Spec.RuleGroup.ReferenceSets.IPSetReferences", a.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences, b.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences)
 				}
@@ -99,16 +106,16 @@ func newResourceDelta(
 		if ackcompare.HasNilDifference(a.ko.Spec.RuleGroup.RuleVariables, b.ko.Spec.RuleGroup.RuleVariables) {
 			delta.Add("Spec.RuleGroup.RuleVariables", a.ko.Spec.RuleGroup.RuleVariables, b.ko.Spec.RuleGroup.RuleVariables)
 		} else if a.ko.Spec.RuleGroup.RuleVariables != nil && b.ko.Spec.RuleGroup.RuleVariables != nil {
-			if ackcompare.HasNilDifference(a.ko.Spec.RuleGroup.RuleVariables.IPSets, b.ko.Spec.RuleGroup.RuleVariables.IPSets) {
+			if len(a.ko.Spec.RuleGroup.RuleVariables.IPSets) != len(b.ko.Spec.RuleGroup.RuleVariables.IPSets) {
 				delta.Add("Spec.RuleGroup.RuleVariables.IPSets", a.ko.Spec.RuleGroup.RuleVariables.IPSets, b.ko.Spec.RuleGroup.RuleVariables.IPSets)
-			} else if a.ko.Spec.RuleGroup.RuleVariables.IPSets != nil && b.ko.Spec.RuleGroup.RuleVariables.IPSets != nil {
+			} else if len(a.ko.Spec.RuleGroup.RuleVariables.IPSets) > 0 {
 				if !reflect.DeepEqual(a.ko.Spec.RuleGroup.RuleVariables.IPSets, b.ko.Spec.RuleGroup.RuleVariables.IPSets) {
 					delta.Add("Spec.RuleGroup.RuleVariables.IPSets", a.ko.Spec.RuleGroup.RuleVariables.IPSets, b.ko.Spec.RuleGroup.RuleVariables.IPSets)
 				}
 			}
-			if ackcompare.HasNilDifference(a.ko.Spec.RuleGroup.RuleVariables.PortSets, b.ko.Spec.RuleGroup.RuleVariables.PortSets) {
+			if len(a.ko.Spec.RuleGroup.RuleVariables.PortSets) != len(b.ko.Spec.RuleGroup.RuleVariables.PortSets) {
 				delta.Add("Spec.RuleGroup.RuleVariables.PortSets", a.ko.Spec.RuleGroup.RuleVariables.PortSets, b.ko.Spec.RuleGroup.RuleVariables.PortSets)
-			} else if a.ko.Spec.RuleGroup.RuleVariables.PortSets != nil && b.ko.Spec.RuleGroup.RuleVariables.PortSets != nil {
+			} else if len(a.ko.Spec.RuleGroup.RuleVariables.PortSets) > 0 {
 				if !reflect.DeepEqual(a.ko.Spec.RuleGroup.RuleVariables.PortSets, b.ko.Spec.RuleGroup.RuleVariables.PortSets) {
 					delta.Add("Spec.RuleGroup.RuleVariables.PortSets", a.ko.Spec.RuleGroup.RuleVariables.PortSets, b.ko.Spec.RuleGroup.RuleVariables.PortSets)
 				}
@@ -127,11 +134,19 @@ func newResourceDelta(
 						delta.Add("Spec.RuleGroup.RulesSource.RulesSourceList.GeneratedRulesType", a.ko.Spec.RuleGroup.RulesSource.RulesSourceList.GeneratedRulesType, b.ko.Spec.RuleGroup.RulesSource.RulesSourceList.GeneratedRulesType)
 					}
 				}
-				if !ackcompare.SliceStringPEqual(a.ko.Spec.RuleGroup.RulesSource.RulesSourceList.TargetTypes, b.ko.Spec.RuleGroup.RulesSource.RulesSourceList.TargetTypes) {
+				if len(a.ko.Spec.RuleGroup.RulesSource.RulesSourceList.TargetTypes) != len(b.ko.Spec.RuleGroup.RulesSource.RulesSourceList.TargetTypes) {
 					delta.Add("Spec.RuleGroup.RulesSource.RulesSourceList.TargetTypes", a.ko.Spec.RuleGroup.RulesSource.RulesSourceList.TargetTypes, b.ko.Spec.RuleGroup.RulesSource.RulesSourceList.TargetTypes)
+				} else if len(a.ko.Spec.RuleGroup.RulesSource.RulesSourceList.TargetTypes) > 0 {
+					if !ackcompare.SliceStringPEqual(a.ko.Spec.RuleGroup.RulesSource.RulesSourceList.TargetTypes, b.ko.Spec.RuleGroup.RulesSource.RulesSourceList.TargetTypes) {
+						delta.Add("Spec.RuleGroup.RulesSource.RulesSourceList.TargetTypes", a.ko.Spec.RuleGroup.RulesSource.RulesSourceList.TargetTypes, b.ko.Spec.RuleGroup.RulesSource.RulesSourceList.TargetTypes)
+					}
 				}
-				if !ackcompare.SliceStringPEqual(a.ko.Spec.RuleGroup.RulesSource.RulesSourceList.Targets, b.ko.Spec.RuleGroup.RulesSource.RulesSourceList.Targets) {
+				if len(a.ko.Spec.RuleGroup.RulesSource.RulesSourceList.Targets) != len(b.ko.Spec.RuleGroup.RulesSource.RulesSourceList.Targets) {
 					delta.Add("Spec.RuleGroup.RulesSource.RulesSourceList.Targets", a.ko.Spec.RuleGroup.RulesSource.RulesSourceList.Targets, b.ko.Spec.RuleGroup.RulesSource.RulesSourceList.Targets)
+				} else if len(a.ko.Spec.RuleGroup.RulesSource.RulesSourceList.Targets) > 0 {
+					if !ackcompare.SliceStringPEqual(a.ko.Spec.RuleGroup.RulesSource.RulesSourceList.Targets, b.ko.Spec.RuleGroup.RulesSource.RulesSourceList.Targets) {
+						delta.Add("Spec.RuleGroup.RulesSource.RulesSourceList.Targets", a.ko.Spec.RuleGroup.RulesSource.RulesSourceList.Targets, b.ko.Spec.RuleGroup.RulesSource.RulesSourceList.Targets)
+					}
 				}
 			}
 			if ackcompare.HasNilDifference(a.ko.Spec.RuleGroup.RulesSource.RulesString, b.ko.Spec.RuleGroup.RulesSource.RulesString) {
@@ -141,17 +156,29 @@ func newResourceDelta(
 					delta.Add("Spec.RuleGroup.RulesSource.RulesString", a.ko.Spec.RuleGroup.RulesSource.RulesString, b.ko.Spec.RuleGroup.RulesSource.RulesString)
 				}
 			}
-			if !reflect.DeepEqual(a.ko.Spec.RuleGroup.RulesSource.StatefulRules, b.ko.Spec.RuleGroup.RulesSource.StatefulRules) {
+			if len(a.ko.Spec.RuleGroup.RulesSource.StatefulRules) != len(b.ko.Spec.RuleGroup.RulesSource.StatefulRules) {
 				delta.Add("Spec.RuleGroup.RulesSource.StatefulRules", a.ko.Spec.RuleGroup.RulesSource.StatefulRules, b.ko.Spec.RuleGroup.RulesSource.StatefulRules)
+			} else if len(a.ko.Spec.RuleGroup.RulesSource.StatefulRules) > 0 {
+				if !reflect.DeepEqual(a.ko.Spec.RuleGroup.RulesSource.StatefulRules, b.ko.Spec.RuleGroup.RulesSource.StatefulRules) {
+					delta.Add("Spec.RuleGroup.RulesSource.StatefulRules", a.ko.Spec.RuleGroup.RulesSource.StatefulRules, b.ko.Spec.RuleGroup.RulesSource.StatefulRules)
+				}
 			}
 			if ackcompare.HasNilDifference(a.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions, b.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions) {
 				delta.Add("Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions", a.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions, b.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions)
 			} else if a.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions != nil && b.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions != nil {
-				if !reflect.DeepEqual(a.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.CustomActions, b.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.CustomActions) {
+				if len(a.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.CustomActions) != len(b.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.CustomActions) {
 					delta.Add("Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.CustomActions", a.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.CustomActions, b.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.CustomActions)
+				} else if len(a.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.CustomActions) > 0 {
+					if !reflect.DeepEqual(a.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.CustomActions, b.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.CustomActions) {
+						delta.Add("Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.CustomActions", a.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.CustomActions, b.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.CustomActions)
+					}
 				}
-				if !reflect.DeepEqual(a.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.StatelessRules, b.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.StatelessRules) {
+				if len(a.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.StatelessRules) != len(b.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.StatelessRules) {
 					delta.Add("Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.StatelessRules", a.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.StatelessRules, b.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.StatelessRules)
+				} else if len(a.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.StatelessRules) > 0 {
+					if !reflect.DeepEqual(a.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.StatelessRules, b.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.StatelessRules) {
+						delta.Add("Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.StatelessRules", a.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.StatelessRules, b.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.StatelessRules)
+					}
 				}
 			}
 		}

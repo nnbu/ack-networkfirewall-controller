@@ -103,8 +103,12 @@ func newResourceDelta(
 			delta.Add("Spec.SubnetChangeProtection", a.ko.Spec.SubnetChangeProtection, b.ko.Spec.SubnetChangeProtection)
 		}
 	}
-	if !reflect.DeepEqual(a.ko.Spec.SubnetMappings, b.ko.Spec.SubnetMappings) {
+	if len(a.ko.Spec.SubnetMappings) != len(b.ko.Spec.SubnetMappings) {
 		delta.Add("Spec.SubnetMappings", a.ko.Spec.SubnetMappings, b.ko.Spec.SubnetMappings)
+	} else if len(a.ko.Spec.SubnetMappings) > 0 {
+		if !reflect.DeepEqual(a.ko.Spec.SubnetMappings, b.ko.Spec.SubnetMappings) {
+			delta.Add("Spec.SubnetMappings", a.ko.Spec.SubnetMappings, b.ko.Spec.SubnetMappings)
+		}
 	}
 	if !ackcompare.MapStringStringEqual(ToACKTags(a.ko.Spec.Tags), ToACKTags(b.ko.Spec.Tags)) {
 		delta.Add("Spec.Tags", a.ko.Spec.Tags, b.ko.Spec.Tags)

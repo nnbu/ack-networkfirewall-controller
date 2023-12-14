@@ -36,6 +36,12 @@ import (
 // more than one firewall.
 type RuleGroupSpec struct {
 
+	// Indicates whether you want Network Firewall to analyze the stateless rules
+	// in the rule group for rule behavior such as asymmetric routing. If set to
+	// TRUE, Network Firewall runs the analysis and then creates the rule group
+	// for you. To run the stateless rule group analyzer without creating the rule
+	// group, set DryRun to TRUE.
+	AnalyzeRuleGroup *bool `json:"analyzeRuleGroup,omitempty"`
 	// The maximum operating resources that this rule group can use. Rule group
 	// capacity is fixed at creation. When you update a rule group, you are limited
 	// to this capacity. When you reference a rule group from a firewall policy,

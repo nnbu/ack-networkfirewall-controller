@@ -390,6 +390,29 @@ func (rm *resourceManager) sdkFind(
 	}
 	if resp.RuleGroupResponse != nil {
 		f1 := &svcapitypes.RuleGroupResponse{}
+		if resp.RuleGroupResponse.AnalysisResults != nil {
+			f1f0 := []*svcapitypes.AnalysisResult{}
+			for _, f1f0iter := range resp.RuleGroupResponse.AnalysisResults {
+				f1f0elem := &svcapitypes.AnalysisResult{}
+				if f1f0iter.AnalysisDetail != nil {
+					f1f0elem.AnalysisDetail = f1f0iter.AnalysisDetail
+				}
+				if f1f0iter.IdentifiedRuleIds != nil {
+					f1f0elemf1 := []*string{}
+					for _, f1f0elemf1iter := range f1f0iter.IdentifiedRuleIds {
+						var f1f0elemf1elem string
+						f1f0elemf1elem = *f1f0elemf1iter
+						f1f0elemf1 = append(f1f0elemf1, &f1f0elemf1elem)
+					}
+					f1f0elem.IDentifiedRuleIDs = f1f0elemf1
+				}
+				if f1f0iter.IdentifiedType != nil {
+					f1f0elem.IDentifiedType = f1f0iter.IdentifiedType
+				}
+				f1f0 = append(f1f0, f1f0elem)
+			}
+			f1.AnalysisResults = f1f0
+		}
 		if resp.RuleGroupResponse.Capacity != nil {
 			f1.Capacity = resp.RuleGroupResponse.Capacity
 		}
@@ -400,14 +423,14 @@ func (rm *resourceManager) sdkFind(
 			f1.Description = resp.RuleGroupResponse.Description
 		}
 		if resp.RuleGroupResponse.EncryptionConfiguration != nil {
-			f1f3 := &svcapitypes.EncryptionConfiguration{}
+			f1f4 := &svcapitypes.EncryptionConfiguration{}
 			if resp.RuleGroupResponse.EncryptionConfiguration.KeyId != nil {
-				f1f3.KeyID = resp.RuleGroupResponse.EncryptionConfiguration.KeyId
+				f1f4.KeyID = resp.RuleGroupResponse.EncryptionConfiguration.KeyId
 			}
 			if resp.RuleGroupResponse.EncryptionConfiguration.Type != nil {
-				f1f3.Type = resp.RuleGroupResponse.EncryptionConfiguration.Type
+				f1f4.Type = resp.RuleGroupResponse.EncryptionConfiguration.Type
 			}
-			f1.EncryptionConfiguration = f1f3
+			f1.EncryptionConfiguration = f1f4
 		}
 		if resp.RuleGroupResponse.LastModifiedTime != nil {
 			f1.LastModifiedTime = &metav1.Time{*resp.RuleGroupResponse.LastModifiedTime}
@@ -431,28 +454,28 @@ func (rm *resourceManager) sdkFind(
 			f1.SNSTopic = resp.RuleGroupResponse.SnsTopic
 		}
 		if resp.RuleGroupResponse.SourceMetadata != nil {
-			f1f11 := &svcapitypes.SourceMetadata{}
+			f1f12 := &svcapitypes.SourceMetadata{}
 			if resp.RuleGroupResponse.SourceMetadata.SourceArn != nil {
-				f1f11.SourceARN = resp.RuleGroupResponse.SourceMetadata.SourceArn
+				f1f12.SourceARN = resp.RuleGroupResponse.SourceMetadata.SourceArn
 			}
 			if resp.RuleGroupResponse.SourceMetadata.SourceUpdateToken != nil {
-				f1f11.SourceUpdateToken = resp.RuleGroupResponse.SourceMetadata.SourceUpdateToken
+				f1f12.SourceUpdateToken = resp.RuleGroupResponse.SourceMetadata.SourceUpdateToken
 			}
-			f1.SourceMetadata = f1f11
+			f1.SourceMetadata = f1f12
 		}
 		if resp.RuleGroupResponse.Tags != nil {
-			f1f12 := []*svcapitypes.Tag{}
-			for _, f1f12iter := range resp.RuleGroupResponse.Tags {
-				f1f12elem := &svcapitypes.Tag{}
-				if f1f12iter.Key != nil {
-					f1f12elem.Key = f1f12iter.Key
+			f1f13 := []*svcapitypes.Tag{}
+			for _, f1f13iter := range resp.RuleGroupResponse.Tags {
+				f1f13elem := &svcapitypes.Tag{}
+				if f1f13iter.Key != nil {
+					f1f13elem.Key = f1f13iter.Key
 				}
-				if f1f12iter.Value != nil {
-					f1f12elem.Value = f1f12iter.Value
+				if f1f13iter.Value != nil {
+					f1f13elem.Value = f1f13iter.Value
 				}
-				f1f12 = append(f1f12, f1f12elem)
+				f1f13 = append(f1f13, f1f13elem)
 			}
-			f1.Tags = f1f12
+			f1.Tags = f1f13
 		}
 		if resp.RuleGroupResponse.Type != nil {
 			f1.Type = resp.RuleGroupResponse.Type
@@ -487,6 +510,9 @@ func (rm *resourceManager) newDescribeRequestPayload(
 ) (*svcsdk.DescribeRuleGroupInput, error) {
 	res := &svcsdk.DescribeRuleGroupInput{}
 
+	if r.ko.Spec.AnalyzeRuleGroup != nil {
+		res.SetAnalyzeRuleGroup(*r.ko.Spec.AnalyzeRuleGroup)
+	}
 	if r.ko.Status.ACKResourceMetadata != nil && r.ko.Status.ACKResourceMetadata.ARN != nil {
 		res.SetRuleGroupArn(string(*r.ko.Status.ACKResourceMetadata.ARN))
 	}
@@ -530,6 +556,29 @@ func (rm *resourceManager) sdkCreate(
 
 	if resp.RuleGroupResponse != nil {
 		f0 := &svcapitypes.RuleGroupResponse{}
+		if resp.RuleGroupResponse.AnalysisResults != nil {
+			f0f0 := []*svcapitypes.AnalysisResult{}
+			for _, f0f0iter := range resp.RuleGroupResponse.AnalysisResults {
+				f0f0elem := &svcapitypes.AnalysisResult{}
+				if f0f0iter.AnalysisDetail != nil {
+					f0f0elem.AnalysisDetail = f0f0iter.AnalysisDetail
+				}
+				if f0f0iter.IdentifiedRuleIds != nil {
+					f0f0elemf1 := []*string{}
+					for _, f0f0elemf1iter := range f0f0iter.IdentifiedRuleIds {
+						var f0f0elemf1elem string
+						f0f0elemf1elem = *f0f0elemf1iter
+						f0f0elemf1 = append(f0f0elemf1, &f0f0elemf1elem)
+					}
+					f0f0elem.IDentifiedRuleIDs = f0f0elemf1
+				}
+				if f0f0iter.IdentifiedType != nil {
+					f0f0elem.IDentifiedType = f0f0iter.IdentifiedType
+				}
+				f0f0 = append(f0f0, f0f0elem)
+			}
+			f0.AnalysisResults = f0f0
+		}
 		if resp.RuleGroupResponse.Capacity != nil {
 			f0.Capacity = resp.RuleGroupResponse.Capacity
 		}
@@ -540,14 +589,14 @@ func (rm *resourceManager) sdkCreate(
 			f0.Description = resp.RuleGroupResponse.Description
 		}
 		if resp.RuleGroupResponse.EncryptionConfiguration != nil {
-			f0f3 := &svcapitypes.EncryptionConfiguration{}
+			f0f4 := &svcapitypes.EncryptionConfiguration{}
 			if resp.RuleGroupResponse.EncryptionConfiguration.KeyId != nil {
-				f0f3.KeyID = resp.RuleGroupResponse.EncryptionConfiguration.KeyId
+				f0f4.KeyID = resp.RuleGroupResponse.EncryptionConfiguration.KeyId
 			}
 			if resp.RuleGroupResponse.EncryptionConfiguration.Type != nil {
-				f0f3.Type = resp.RuleGroupResponse.EncryptionConfiguration.Type
+				f0f4.Type = resp.RuleGroupResponse.EncryptionConfiguration.Type
 			}
-			f0.EncryptionConfiguration = f0f3
+			f0.EncryptionConfiguration = f0f4
 		}
 		if resp.RuleGroupResponse.LastModifiedTime != nil {
 			f0.LastModifiedTime = &metav1.Time{*resp.RuleGroupResponse.LastModifiedTime}
@@ -571,28 +620,28 @@ func (rm *resourceManager) sdkCreate(
 			f0.SNSTopic = resp.RuleGroupResponse.SnsTopic
 		}
 		if resp.RuleGroupResponse.SourceMetadata != nil {
-			f0f11 := &svcapitypes.SourceMetadata{}
+			f0f12 := &svcapitypes.SourceMetadata{}
 			if resp.RuleGroupResponse.SourceMetadata.SourceArn != nil {
-				f0f11.SourceARN = resp.RuleGroupResponse.SourceMetadata.SourceArn
+				f0f12.SourceARN = resp.RuleGroupResponse.SourceMetadata.SourceArn
 			}
 			if resp.RuleGroupResponse.SourceMetadata.SourceUpdateToken != nil {
-				f0f11.SourceUpdateToken = resp.RuleGroupResponse.SourceMetadata.SourceUpdateToken
+				f0f12.SourceUpdateToken = resp.RuleGroupResponse.SourceMetadata.SourceUpdateToken
 			}
-			f0.SourceMetadata = f0f11
+			f0.SourceMetadata = f0f12
 		}
 		if resp.RuleGroupResponse.Tags != nil {
-			f0f12 := []*svcapitypes.Tag{}
-			for _, f0f12iter := range resp.RuleGroupResponse.Tags {
-				f0f12elem := &svcapitypes.Tag{}
-				if f0f12iter.Key != nil {
-					f0f12elem.Key = f0f12iter.Key
+			f0f13 := []*svcapitypes.Tag{}
+			for _, f0f13iter := range resp.RuleGroupResponse.Tags {
+				f0f13elem := &svcapitypes.Tag{}
+				if f0f13iter.Key != nil {
+					f0f13elem.Key = f0f13iter.Key
 				}
-				if f0f12iter.Value != nil {
-					f0f12elem.Value = f0f12iter.Value
+				if f0f13iter.Value != nil {
+					f0f13elem.Value = f0f13iter.Value
 				}
-				f0f12 = append(f0f12, f0f12elem)
+				f0f13 = append(f0f13, f0f13elem)
 			}
-			f0.Tags = f0f12
+			f0.Tags = f0f13
 		}
 		if resp.RuleGroupResponse.Type != nil {
 			f0.Type = resp.RuleGroupResponse.Type
@@ -619,8 +668,507 @@ func (rm *resourceManager) newCreateRequestPayload(
 ) (*svcsdk.CreateRuleGroupInput, error) {
 	res := &svcsdk.CreateRuleGroupInput{}
 
+	if r.ko.Spec.AnalyzeRuleGroup != nil {
+		res.SetAnalyzeRuleGroup(*r.ko.Spec.AnalyzeRuleGroup)
+	}
 	if r.ko.Spec.Capacity != nil {
 		res.SetCapacity(*r.ko.Spec.Capacity)
+	}
+	if r.ko.Spec.Description != nil {
+		res.SetDescription(*r.ko.Spec.Description)
+	}
+	if r.ko.Spec.DryRun != nil {
+		res.SetDryRun(*r.ko.Spec.DryRun)
+	}
+	if r.ko.Spec.EncryptionConfiguration != nil {
+		f4 := &svcsdk.EncryptionConfiguration{}
+		if r.ko.Spec.EncryptionConfiguration.KeyID != nil {
+			f4.SetKeyId(*r.ko.Spec.EncryptionConfiguration.KeyID)
+		}
+		if r.ko.Spec.EncryptionConfiguration.Type != nil {
+			f4.SetType(*r.ko.Spec.EncryptionConfiguration.Type)
+		}
+		res.SetEncryptionConfiguration(f4)
+	}
+	if r.ko.Spec.RuleGroup != nil {
+		f5 := &svcsdk.RuleGroup{}
+		if r.ko.Spec.RuleGroup.ReferenceSets != nil {
+			f5f0 := &svcsdk.ReferenceSets{}
+			if r.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences != nil {
+				f5f0f0 := map[string]*svcsdk.IPSetReference{}
+				for f5f0f0key, f5f0f0valiter := range r.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences {
+					f5f0f0val := &svcsdk.IPSetReference{}
+					if f5f0f0valiter.ReferenceARN != nil {
+						f5f0f0val.SetReferenceArn(*f5f0f0valiter.ReferenceARN)
+					}
+					f5f0f0[f5f0f0key] = f5f0f0val
+				}
+				f5f0.SetIPSetReferences(f5f0f0)
+			}
+			f5.SetReferenceSets(f5f0)
+		}
+		if r.ko.Spec.RuleGroup.RuleVariables != nil {
+			f5f1 := &svcsdk.RuleVariables{}
+			if r.ko.Spec.RuleGroup.RuleVariables.IPSets != nil {
+				f5f1f0 := map[string]*svcsdk.IPSet{}
+				for f5f1f0key, f5f1f0valiter := range r.ko.Spec.RuleGroup.RuleVariables.IPSets {
+					f5f1f0val := &svcsdk.IPSet{}
+					if f5f1f0valiter.Definition != nil {
+						f5f1f0valf0 := []*string{}
+						for _, f5f1f0valf0iter := range f5f1f0valiter.Definition {
+							var f5f1f0valf0elem string
+							f5f1f0valf0elem = *f5f1f0valf0iter
+							f5f1f0valf0 = append(f5f1f0valf0, &f5f1f0valf0elem)
+						}
+						f5f1f0val.SetDefinition(f5f1f0valf0)
+					}
+					f5f1f0[f5f1f0key] = f5f1f0val
+				}
+				f5f1.SetIPSets(f5f1f0)
+			}
+			if r.ko.Spec.RuleGroup.RuleVariables.PortSets != nil {
+				f5f1f1 := map[string]*svcsdk.PortSet{}
+				for f5f1f1key, f5f1f1valiter := range r.ko.Spec.RuleGroup.RuleVariables.PortSets {
+					f5f1f1val := &svcsdk.PortSet{}
+					if f5f1f1valiter.Definition != nil {
+						f5f1f1valf0 := []*string{}
+						for _, f5f1f1valf0iter := range f5f1f1valiter.Definition {
+							var f5f1f1valf0elem string
+							f5f1f1valf0elem = *f5f1f1valf0iter
+							f5f1f1valf0 = append(f5f1f1valf0, &f5f1f1valf0elem)
+						}
+						f5f1f1val.SetDefinition(f5f1f1valf0)
+					}
+					f5f1f1[f5f1f1key] = f5f1f1val
+				}
+				f5f1.SetPortSets(f5f1f1)
+			}
+			f5.SetRuleVariables(f5f1)
+		}
+		if r.ko.Spec.RuleGroup.RulesSource != nil {
+			f5f2 := &svcsdk.RulesSource{}
+			if r.ko.Spec.RuleGroup.RulesSource.RulesSourceList != nil {
+				f5f2f0 := &svcsdk.RulesSourceList{}
+				if r.ko.Spec.RuleGroup.RulesSource.RulesSourceList.GeneratedRulesType != nil {
+					f5f2f0.SetGeneratedRulesType(*r.ko.Spec.RuleGroup.RulesSource.RulesSourceList.GeneratedRulesType)
+				}
+				if r.ko.Spec.RuleGroup.RulesSource.RulesSourceList.TargetTypes != nil {
+					f5f2f0f1 := []*string{}
+					for _, f5f2f0f1iter := range r.ko.Spec.RuleGroup.RulesSource.RulesSourceList.TargetTypes {
+						var f5f2f0f1elem string
+						f5f2f0f1elem = *f5f2f0f1iter
+						f5f2f0f1 = append(f5f2f0f1, &f5f2f0f1elem)
+					}
+					f5f2f0.SetTargetTypes(f5f2f0f1)
+				}
+				if r.ko.Spec.RuleGroup.RulesSource.RulesSourceList.Targets != nil {
+					f5f2f0f2 := []*string{}
+					for _, f5f2f0f2iter := range r.ko.Spec.RuleGroup.RulesSource.RulesSourceList.Targets {
+						var f5f2f0f2elem string
+						f5f2f0f2elem = *f5f2f0f2iter
+						f5f2f0f2 = append(f5f2f0f2, &f5f2f0f2elem)
+					}
+					f5f2f0.SetTargets(f5f2f0f2)
+				}
+				f5f2.SetRulesSourceList(f5f2f0)
+			}
+			if r.ko.Spec.RuleGroup.RulesSource.RulesString != nil {
+				f5f2.SetRulesString(*r.ko.Spec.RuleGroup.RulesSource.RulesString)
+			}
+			if r.ko.Spec.RuleGroup.RulesSource.StatefulRules != nil {
+				f5f2f2 := []*svcsdk.StatefulRule{}
+				for _, f5f2f2iter := range r.ko.Spec.RuleGroup.RulesSource.StatefulRules {
+					f5f2f2elem := &svcsdk.StatefulRule{}
+					if f5f2f2iter.Action != nil {
+						f5f2f2elem.SetAction(*f5f2f2iter.Action)
+					}
+					if f5f2f2iter.Header != nil {
+						f5f2f2elemf1 := &svcsdk.Header{}
+						if f5f2f2iter.Header.Destination != nil {
+							f5f2f2elemf1.SetDestination(*f5f2f2iter.Header.Destination)
+						}
+						if f5f2f2iter.Header.DestinationPort != nil {
+							f5f2f2elemf1.SetDestinationPort(*f5f2f2iter.Header.DestinationPort)
+						}
+						if f5f2f2iter.Header.Direction != nil {
+							f5f2f2elemf1.SetDirection(*f5f2f2iter.Header.Direction)
+						}
+						if f5f2f2iter.Header.Protocol != nil {
+							f5f2f2elemf1.SetProtocol(*f5f2f2iter.Header.Protocol)
+						}
+						if f5f2f2iter.Header.Source != nil {
+							f5f2f2elemf1.SetSource(*f5f2f2iter.Header.Source)
+						}
+						if f5f2f2iter.Header.SourcePort != nil {
+							f5f2f2elemf1.SetSourcePort(*f5f2f2iter.Header.SourcePort)
+						}
+						f5f2f2elem.SetHeader(f5f2f2elemf1)
+					}
+					if f5f2f2iter.RuleOptions != nil {
+						f5f2f2elemf2 := []*svcsdk.RuleOption{}
+						for _, f5f2f2elemf2iter := range f5f2f2iter.RuleOptions {
+							f5f2f2elemf2elem := &svcsdk.RuleOption{}
+							if f5f2f2elemf2iter.Keyword != nil {
+								f5f2f2elemf2elem.SetKeyword(*f5f2f2elemf2iter.Keyword)
+							}
+							if f5f2f2elemf2iter.Settings != nil {
+								f5f2f2elemf2elemf1 := []*string{}
+								for _, f5f2f2elemf2elemf1iter := range f5f2f2elemf2iter.Settings {
+									var f5f2f2elemf2elemf1elem string
+									f5f2f2elemf2elemf1elem = *f5f2f2elemf2elemf1iter
+									f5f2f2elemf2elemf1 = append(f5f2f2elemf2elemf1, &f5f2f2elemf2elemf1elem)
+								}
+								f5f2f2elemf2elem.SetSettings(f5f2f2elemf2elemf1)
+							}
+							f5f2f2elemf2 = append(f5f2f2elemf2, f5f2f2elemf2elem)
+						}
+						f5f2f2elem.SetRuleOptions(f5f2f2elemf2)
+					}
+					f5f2f2 = append(f5f2f2, f5f2f2elem)
+				}
+				f5f2.SetStatefulRules(f5f2f2)
+			}
+			if r.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions != nil {
+				f5f2f3 := &svcsdk.StatelessRulesAndCustomActions{}
+				if r.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.CustomActions != nil {
+					f5f2f3f0 := []*svcsdk.CustomAction{}
+					for _, f5f2f3f0iter := range r.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.CustomActions {
+						f5f2f3f0elem := &svcsdk.CustomAction{}
+						if f5f2f3f0iter.ActionDefinition != nil {
+							f5f2f3f0elemf0 := &svcsdk.ActionDefinition{}
+							if f5f2f3f0iter.ActionDefinition.PublishMetricAction != nil {
+								f5f2f3f0elemf0f0 := &svcsdk.PublishMetricAction{}
+								if f5f2f3f0iter.ActionDefinition.PublishMetricAction.Dimensions != nil {
+									f5f2f3f0elemf0f0f0 := []*svcsdk.Dimension{}
+									for _, f5f2f3f0elemf0f0f0iter := range f5f2f3f0iter.ActionDefinition.PublishMetricAction.Dimensions {
+										f5f2f3f0elemf0f0f0elem := &svcsdk.Dimension{}
+										if f5f2f3f0elemf0f0f0iter.Value != nil {
+											f5f2f3f0elemf0f0f0elem.SetValue(*f5f2f3f0elemf0f0f0iter.Value)
+										}
+										f5f2f3f0elemf0f0f0 = append(f5f2f3f0elemf0f0f0, f5f2f3f0elemf0f0f0elem)
+									}
+									f5f2f3f0elemf0f0.SetDimensions(f5f2f3f0elemf0f0f0)
+								}
+								f5f2f3f0elemf0.SetPublishMetricAction(f5f2f3f0elemf0f0)
+							}
+							f5f2f3f0elem.SetActionDefinition(f5f2f3f0elemf0)
+						}
+						if f5f2f3f0iter.ActionName != nil {
+							f5f2f3f0elem.SetActionName(*f5f2f3f0iter.ActionName)
+						}
+						f5f2f3f0 = append(f5f2f3f0, f5f2f3f0elem)
+					}
+					f5f2f3.SetCustomActions(f5f2f3f0)
+				}
+				if r.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.StatelessRules != nil {
+					f5f2f3f1 := []*svcsdk.StatelessRule{}
+					for _, f5f2f3f1iter := range r.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.StatelessRules {
+						f5f2f3f1elem := &svcsdk.StatelessRule{}
+						if f5f2f3f1iter.Priority != nil {
+							f5f2f3f1elem.SetPriority(*f5f2f3f1iter.Priority)
+						}
+						if f5f2f3f1iter.RuleDefinition != nil {
+							f5f2f3f1elemf1 := &svcsdk.RuleDefinition{}
+							if f5f2f3f1iter.RuleDefinition.Actions != nil {
+								f5f2f3f1elemf1f0 := []*string{}
+								for _, f5f2f3f1elemf1f0iter := range f5f2f3f1iter.RuleDefinition.Actions {
+									var f5f2f3f1elemf1f0elem string
+									f5f2f3f1elemf1f0elem = *f5f2f3f1elemf1f0iter
+									f5f2f3f1elemf1f0 = append(f5f2f3f1elemf1f0, &f5f2f3f1elemf1f0elem)
+								}
+								f5f2f3f1elemf1.SetActions(f5f2f3f1elemf1f0)
+							}
+							if f5f2f3f1iter.RuleDefinition.MatchAttributes != nil {
+								f5f2f3f1elemf1f1 := &svcsdk.MatchAttributes{}
+								if f5f2f3f1iter.RuleDefinition.MatchAttributes.DestinationPorts != nil {
+									f5f2f3f1elemf1f1f0 := []*svcsdk.PortRange{}
+									for _, f5f2f3f1elemf1f1f0iter := range f5f2f3f1iter.RuleDefinition.MatchAttributes.DestinationPorts {
+										f5f2f3f1elemf1f1f0elem := &svcsdk.PortRange{}
+										if f5f2f3f1elemf1f1f0iter.FromPort != nil {
+											f5f2f3f1elemf1f1f0elem.SetFromPort(*f5f2f3f1elemf1f1f0iter.FromPort)
+										}
+										if f5f2f3f1elemf1f1f0iter.ToPort != nil {
+											f5f2f3f1elemf1f1f0elem.SetToPort(*f5f2f3f1elemf1f1f0iter.ToPort)
+										}
+										f5f2f3f1elemf1f1f0 = append(f5f2f3f1elemf1f1f0, f5f2f3f1elemf1f1f0elem)
+									}
+									f5f2f3f1elemf1f1.SetDestinationPorts(f5f2f3f1elemf1f1f0)
+								}
+								if f5f2f3f1iter.RuleDefinition.MatchAttributes.Destinations != nil {
+									f5f2f3f1elemf1f1f1 := []*svcsdk.Address{}
+									for _, f5f2f3f1elemf1f1f1iter := range f5f2f3f1iter.RuleDefinition.MatchAttributes.Destinations {
+										f5f2f3f1elemf1f1f1elem := &svcsdk.Address{}
+										if f5f2f3f1elemf1f1f1iter.AddressDefinition != nil {
+											f5f2f3f1elemf1f1f1elem.SetAddressDefinition(*f5f2f3f1elemf1f1f1iter.AddressDefinition)
+										}
+										f5f2f3f1elemf1f1f1 = append(f5f2f3f1elemf1f1f1, f5f2f3f1elemf1f1f1elem)
+									}
+									f5f2f3f1elemf1f1.SetDestinations(f5f2f3f1elemf1f1f1)
+								}
+								if f5f2f3f1iter.RuleDefinition.MatchAttributes.Protocols != nil {
+									f5f2f3f1elemf1f1f2 := []*int64{}
+									for _, f5f2f3f1elemf1f1f2iter := range f5f2f3f1iter.RuleDefinition.MatchAttributes.Protocols {
+										var f5f2f3f1elemf1f1f2elem int64
+										f5f2f3f1elemf1f1f2elem = *f5f2f3f1elemf1f1f2iter
+										f5f2f3f1elemf1f1f2 = append(f5f2f3f1elemf1f1f2, &f5f2f3f1elemf1f1f2elem)
+									}
+									f5f2f3f1elemf1f1.SetProtocols(f5f2f3f1elemf1f1f2)
+								}
+								if f5f2f3f1iter.RuleDefinition.MatchAttributes.SourcePorts != nil {
+									f5f2f3f1elemf1f1f3 := []*svcsdk.PortRange{}
+									for _, f5f2f3f1elemf1f1f3iter := range f5f2f3f1iter.RuleDefinition.MatchAttributes.SourcePorts {
+										f5f2f3f1elemf1f1f3elem := &svcsdk.PortRange{}
+										if f5f2f3f1elemf1f1f3iter.FromPort != nil {
+											f5f2f3f1elemf1f1f3elem.SetFromPort(*f5f2f3f1elemf1f1f3iter.FromPort)
+										}
+										if f5f2f3f1elemf1f1f3iter.ToPort != nil {
+											f5f2f3f1elemf1f1f3elem.SetToPort(*f5f2f3f1elemf1f1f3iter.ToPort)
+										}
+										f5f2f3f1elemf1f1f3 = append(f5f2f3f1elemf1f1f3, f5f2f3f1elemf1f1f3elem)
+									}
+									f5f2f3f1elemf1f1.SetSourcePorts(f5f2f3f1elemf1f1f3)
+								}
+								if f5f2f3f1iter.RuleDefinition.MatchAttributes.Sources != nil {
+									f5f2f3f1elemf1f1f4 := []*svcsdk.Address{}
+									for _, f5f2f3f1elemf1f1f4iter := range f5f2f3f1iter.RuleDefinition.MatchAttributes.Sources {
+										f5f2f3f1elemf1f1f4elem := &svcsdk.Address{}
+										if f5f2f3f1elemf1f1f4iter.AddressDefinition != nil {
+											f5f2f3f1elemf1f1f4elem.SetAddressDefinition(*f5f2f3f1elemf1f1f4iter.AddressDefinition)
+										}
+										f5f2f3f1elemf1f1f4 = append(f5f2f3f1elemf1f1f4, f5f2f3f1elemf1f1f4elem)
+									}
+									f5f2f3f1elemf1f1.SetSources(f5f2f3f1elemf1f1f4)
+								}
+								if f5f2f3f1iter.RuleDefinition.MatchAttributes.TCPFlags != nil {
+									f5f2f3f1elemf1f1f5 := []*svcsdk.TCPFlagField{}
+									for _, f5f2f3f1elemf1f1f5iter := range f5f2f3f1iter.RuleDefinition.MatchAttributes.TCPFlags {
+										f5f2f3f1elemf1f1f5elem := &svcsdk.TCPFlagField{}
+										if f5f2f3f1elemf1f1f5iter.Flags != nil {
+											f5f2f3f1elemf1f1f5elemf0 := []*string{}
+											for _, f5f2f3f1elemf1f1f5elemf0iter := range f5f2f3f1elemf1f1f5iter.Flags {
+												var f5f2f3f1elemf1f1f5elemf0elem string
+												f5f2f3f1elemf1f1f5elemf0elem = *f5f2f3f1elemf1f1f5elemf0iter
+												f5f2f3f1elemf1f1f5elemf0 = append(f5f2f3f1elemf1f1f5elemf0, &f5f2f3f1elemf1f1f5elemf0elem)
+											}
+											f5f2f3f1elemf1f1f5elem.SetFlags(f5f2f3f1elemf1f1f5elemf0)
+										}
+										if f5f2f3f1elemf1f1f5iter.Masks != nil {
+											f5f2f3f1elemf1f1f5elemf1 := []*string{}
+											for _, f5f2f3f1elemf1f1f5elemf1iter := range f5f2f3f1elemf1f1f5iter.Masks {
+												var f5f2f3f1elemf1f1f5elemf1elem string
+												f5f2f3f1elemf1f1f5elemf1elem = *f5f2f3f1elemf1f1f5elemf1iter
+												f5f2f3f1elemf1f1f5elemf1 = append(f5f2f3f1elemf1f1f5elemf1, &f5f2f3f1elemf1f1f5elemf1elem)
+											}
+											f5f2f3f1elemf1f1f5elem.SetMasks(f5f2f3f1elemf1f1f5elemf1)
+										}
+										f5f2f3f1elemf1f1f5 = append(f5f2f3f1elemf1f1f5, f5f2f3f1elemf1f1f5elem)
+									}
+									f5f2f3f1elemf1f1.SetTCPFlags(f5f2f3f1elemf1f1f5)
+								}
+								f5f2f3f1elemf1.SetMatchAttributes(f5f2f3f1elemf1f1)
+							}
+							f5f2f3f1elem.SetRuleDefinition(f5f2f3f1elemf1)
+						}
+						f5f2f3f1 = append(f5f2f3f1, f5f2f3f1elem)
+					}
+					f5f2f3.SetStatelessRules(f5f2f3f1)
+				}
+				f5f2.SetStatelessRulesAndCustomActions(f5f2f3)
+			}
+			f5.SetRulesSource(f5f2)
+		}
+		if r.ko.Spec.RuleGroup.StatefulRuleOptions != nil {
+			f5f3 := &svcsdk.StatefulRuleOptions{}
+			if r.ko.Spec.RuleGroup.StatefulRuleOptions.RuleOrder != nil {
+				f5f3.SetRuleOrder(*r.ko.Spec.RuleGroup.StatefulRuleOptions.RuleOrder)
+			}
+			f5.SetStatefulRuleOptions(f5f3)
+		}
+		res.SetRuleGroup(f5)
+	}
+	if r.ko.Spec.RuleGroupName != nil {
+		res.SetRuleGroupName(*r.ko.Spec.RuleGroupName)
+	}
+	if r.ko.Spec.Rules != nil {
+		res.SetRules(*r.ko.Spec.Rules)
+	}
+	if r.ko.Spec.SourceMetadata != nil {
+		f8 := &svcsdk.SourceMetadata{}
+		if r.ko.Spec.SourceMetadata.SourceARN != nil {
+			f8.SetSourceArn(*r.ko.Spec.SourceMetadata.SourceARN)
+		}
+		if r.ko.Spec.SourceMetadata.SourceUpdateToken != nil {
+			f8.SetSourceUpdateToken(*r.ko.Spec.SourceMetadata.SourceUpdateToken)
+		}
+		res.SetSourceMetadata(f8)
+	}
+	if r.ko.Spec.Tags != nil {
+		f9 := []*svcsdk.Tag{}
+		for _, f9iter := range r.ko.Spec.Tags {
+			f9elem := &svcsdk.Tag{}
+			if f9iter.Key != nil {
+				f9elem.SetKey(*f9iter.Key)
+			}
+			if f9iter.Value != nil {
+				f9elem.SetValue(*f9iter.Value)
+			}
+			f9 = append(f9, f9elem)
+		}
+		res.SetTags(f9)
+	}
+	if r.ko.Spec.Type != nil {
+		res.SetType(*r.ko.Spec.Type)
+	}
+
+	return res, nil
+}
+
+// sdkUpdate patches the supplied resource in the backend AWS service API and
+// returns a new resource with updated fields.
+func (rm *resourceManager) sdkUpdate(
+	ctx context.Context,
+	desired *resource,
+	latest *resource,
+	delta *ackcompare.Delta,
+) (updated *resource, err error) {
+	rlog := ackrtlog.FromContext(ctx)
+	exit := rlog.Trace("rm.sdkUpdate")
+	defer func() {
+		exit(err)
+	}()
+	input, err := rm.newUpdateRequestPayload(ctx, desired, delta)
+	if err != nil {
+		return nil, err
+	}
+
+	var resp *svcsdk.UpdateRuleGroupOutput
+	_ = resp
+	resp, err = rm.sdkapi.UpdateRuleGroupWithContext(ctx, input)
+	rm.metrics.RecordAPICall("UPDATE", "UpdateRuleGroup", err)
+	if err != nil {
+		return nil, err
+	}
+	// Merge in the information we read from the API call above to the copy of
+	// the original Kubernetes object we passed to the function
+	ko := desired.ko.DeepCopy()
+
+	if resp.RuleGroupResponse != nil {
+		f0 := &svcapitypes.RuleGroupResponse{}
+		if resp.RuleGroupResponse.AnalysisResults != nil {
+			f0f0 := []*svcapitypes.AnalysisResult{}
+			for _, f0f0iter := range resp.RuleGroupResponse.AnalysisResults {
+				f0f0elem := &svcapitypes.AnalysisResult{}
+				if f0f0iter.AnalysisDetail != nil {
+					f0f0elem.AnalysisDetail = f0f0iter.AnalysisDetail
+				}
+				if f0f0iter.IdentifiedRuleIds != nil {
+					f0f0elemf1 := []*string{}
+					for _, f0f0elemf1iter := range f0f0iter.IdentifiedRuleIds {
+						var f0f0elemf1elem string
+						f0f0elemf1elem = *f0f0elemf1iter
+						f0f0elemf1 = append(f0f0elemf1, &f0f0elemf1elem)
+					}
+					f0f0elem.IDentifiedRuleIDs = f0f0elemf1
+				}
+				if f0f0iter.IdentifiedType != nil {
+					f0f0elem.IDentifiedType = f0f0iter.IdentifiedType
+				}
+				f0f0 = append(f0f0, f0f0elem)
+			}
+			f0.AnalysisResults = f0f0
+		}
+		if resp.RuleGroupResponse.Capacity != nil {
+			f0.Capacity = resp.RuleGroupResponse.Capacity
+		}
+		if resp.RuleGroupResponse.ConsumedCapacity != nil {
+			f0.ConsumedCapacity = resp.RuleGroupResponse.ConsumedCapacity
+		}
+		if resp.RuleGroupResponse.Description != nil {
+			f0.Description = resp.RuleGroupResponse.Description
+		}
+		if resp.RuleGroupResponse.EncryptionConfiguration != nil {
+			f0f4 := &svcapitypes.EncryptionConfiguration{}
+			if resp.RuleGroupResponse.EncryptionConfiguration.KeyId != nil {
+				f0f4.KeyID = resp.RuleGroupResponse.EncryptionConfiguration.KeyId
+			}
+			if resp.RuleGroupResponse.EncryptionConfiguration.Type != nil {
+				f0f4.Type = resp.RuleGroupResponse.EncryptionConfiguration.Type
+			}
+			f0.EncryptionConfiguration = f0f4
+		}
+		if resp.RuleGroupResponse.LastModifiedTime != nil {
+			f0.LastModifiedTime = &metav1.Time{*resp.RuleGroupResponse.LastModifiedTime}
+		}
+		if resp.RuleGroupResponse.NumberOfAssociations != nil {
+			f0.NumberOfAssociations = resp.RuleGroupResponse.NumberOfAssociations
+		}
+		if resp.RuleGroupResponse.RuleGroupArn != nil {
+			f0.RuleGroupARN = resp.RuleGroupResponse.RuleGroupArn
+		}
+		if resp.RuleGroupResponse.RuleGroupId != nil {
+			f0.RuleGroupID = resp.RuleGroupResponse.RuleGroupId
+		}
+		if resp.RuleGroupResponse.RuleGroupName != nil {
+			f0.RuleGroupName = resp.RuleGroupResponse.RuleGroupName
+		}
+		if resp.RuleGroupResponse.RuleGroupStatus != nil {
+			f0.RuleGroupStatus = resp.RuleGroupResponse.RuleGroupStatus
+		}
+		if resp.RuleGroupResponse.SnsTopic != nil {
+			f0.SNSTopic = resp.RuleGroupResponse.SnsTopic
+		}
+		if resp.RuleGroupResponse.SourceMetadata != nil {
+			f0f12 := &svcapitypes.SourceMetadata{}
+			if resp.RuleGroupResponse.SourceMetadata.SourceArn != nil {
+				f0f12.SourceARN = resp.RuleGroupResponse.SourceMetadata.SourceArn
+			}
+			if resp.RuleGroupResponse.SourceMetadata.SourceUpdateToken != nil {
+				f0f12.SourceUpdateToken = resp.RuleGroupResponse.SourceMetadata.SourceUpdateToken
+			}
+			f0.SourceMetadata = f0f12
+		}
+		if resp.RuleGroupResponse.Tags != nil {
+			f0f13 := []*svcapitypes.Tag{}
+			for _, f0f13iter := range resp.RuleGroupResponse.Tags {
+				f0f13elem := &svcapitypes.Tag{}
+				if f0f13iter.Key != nil {
+					f0f13elem.Key = f0f13iter.Key
+				}
+				if f0f13iter.Value != nil {
+					f0f13elem.Value = f0f13iter.Value
+				}
+				f0f13 = append(f0f13, f0f13elem)
+			}
+			f0.Tags = f0f13
+		}
+		if resp.RuleGroupResponse.Type != nil {
+			f0.Type = resp.RuleGroupResponse.Type
+		}
+		ko.Status.RuleGroupResponse = f0
+	} else {
+		ko.Status.RuleGroupResponse = nil
+	}
+	if resp.UpdateToken != nil {
+		ko.Status.UpdateToken = resp.UpdateToken
+	} else {
+		ko.Status.UpdateToken = nil
+	}
+
+	rm.setStatusDefaults(ko)
+	return &resource{ko}, nil
+}
+
+// newUpdateRequestPayload returns an SDK-specific struct for the HTTP request
+// payload of the Update API call for the resource
+func (rm *resourceManager) newUpdateRequestPayload(
+	ctx context.Context,
+	r *resource,
+	delta *ackcompare.Delta,
+) (*svcsdk.UpdateRuleGroupInput, error) {
+	res := &svcsdk.UpdateRuleGroupInput{}
+
+	if r.ko.Spec.AnalyzeRuleGroup != nil {
+		res.SetAnalyzeRuleGroup(*r.ko.Spec.AnalyzeRuleGroup)
 	}
 	if r.ko.Spec.Description != nil {
 		res.SetDescription(*r.ko.Spec.Description)
@@ -934,476 +1482,6 @@ func (rm *resourceManager) newCreateRequestPayload(
 		}
 		res.SetRuleGroup(f4)
 	}
-	if r.ko.Spec.RuleGroupName != nil {
-		res.SetRuleGroupName(*r.ko.Spec.RuleGroupName)
-	}
-	if r.ko.Spec.Rules != nil {
-		res.SetRules(*r.ko.Spec.Rules)
-	}
-	if r.ko.Spec.SourceMetadata != nil {
-		f7 := &svcsdk.SourceMetadata{}
-		if r.ko.Spec.SourceMetadata.SourceARN != nil {
-			f7.SetSourceArn(*r.ko.Spec.SourceMetadata.SourceARN)
-		}
-		if r.ko.Spec.SourceMetadata.SourceUpdateToken != nil {
-			f7.SetSourceUpdateToken(*r.ko.Spec.SourceMetadata.SourceUpdateToken)
-		}
-		res.SetSourceMetadata(f7)
-	}
-	if r.ko.Spec.Tags != nil {
-		f8 := []*svcsdk.Tag{}
-		for _, f8iter := range r.ko.Spec.Tags {
-			f8elem := &svcsdk.Tag{}
-			if f8iter.Key != nil {
-				f8elem.SetKey(*f8iter.Key)
-			}
-			if f8iter.Value != nil {
-				f8elem.SetValue(*f8iter.Value)
-			}
-			f8 = append(f8, f8elem)
-		}
-		res.SetTags(f8)
-	}
-	if r.ko.Spec.Type != nil {
-		res.SetType(*r.ko.Spec.Type)
-	}
-
-	return res, nil
-}
-
-// sdkUpdate patches the supplied resource in the backend AWS service API and
-// returns a new resource with updated fields.
-func (rm *resourceManager) sdkUpdate(
-	ctx context.Context,
-	desired *resource,
-	latest *resource,
-	delta *ackcompare.Delta,
-) (updated *resource, err error) {
-	rlog := ackrtlog.FromContext(ctx)
-	exit := rlog.Trace("rm.sdkUpdate")
-	defer func() {
-		exit(err)
-	}()
-	input, err := rm.newUpdateRequestPayload(ctx, desired, delta)
-	if err != nil {
-		return nil, err
-	}
-
-	var resp *svcsdk.UpdateRuleGroupOutput
-	_ = resp
-	resp, err = rm.sdkapi.UpdateRuleGroupWithContext(ctx, input)
-	rm.metrics.RecordAPICall("UPDATE", "UpdateRuleGroup", err)
-	if err != nil {
-		return nil, err
-	}
-	// Merge in the information we read from the API call above to the copy of
-	// the original Kubernetes object we passed to the function
-	ko := desired.ko.DeepCopy()
-
-	if resp.RuleGroupResponse != nil {
-		f0 := &svcapitypes.RuleGroupResponse{}
-		if resp.RuleGroupResponse.Capacity != nil {
-			f0.Capacity = resp.RuleGroupResponse.Capacity
-		}
-		if resp.RuleGroupResponse.ConsumedCapacity != nil {
-			f0.ConsumedCapacity = resp.RuleGroupResponse.ConsumedCapacity
-		}
-		if resp.RuleGroupResponse.Description != nil {
-			f0.Description = resp.RuleGroupResponse.Description
-		}
-		if resp.RuleGroupResponse.EncryptionConfiguration != nil {
-			f0f3 := &svcapitypes.EncryptionConfiguration{}
-			if resp.RuleGroupResponse.EncryptionConfiguration.KeyId != nil {
-				f0f3.KeyID = resp.RuleGroupResponse.EncryptionConfiguration.KeyId
-			}
-			if resp.RuleGroupResponse.EncryptionConfiguration.Type != nil {
-				f0f3.Type = resp.RuleGroupResponse.EncryptionConfiguration.Type
-			}
-			f0.EncryptionConfiguration = f0f3
-		}
-		if resp.RuleGroupResponse.LastModifiedTime != nil {
-			f0.LastModifiedTime = &metav1.Time{*resp.RuleGroupResponse.LastModifiedTime}
-		}
-		if resp.RuleGroupResponse.NumberOfAssociations != nil {
-			f0.NumberOfAssociations = resp.RuleGroupResponse.NumberOfAssociations
-		}
-		if resp.RuleGroupResponse.RuleGroupArn != nil {
-			f0.RuleGroupARN = resp.RuleGroupResponse.RuleGroupArn
-		}
-		if resp.RuleGroupResponse.RuleGroupId != nil {
-			f0.RuleGroupID = resp.RuleGroupResponse.RuleGroupId
-		}
-		if resp.RuleGroupResponse.RuleGroupName != nil {
-			f0.RuleGroupName = resp.RuleGroupResponse.RuleGroupName
-		}
-		if resp.RuleGroupResponse.RuleGroupStatus != nil {
-			f0.RuleGroupStatus = resp.RuleGroupResponse.RuleGroupStatus
-		}
-		if resp.RuleGroupResponse.SnsTopic != nil {
-			f0.SNSTopic = resp.RuleGroupResponse.SnsTopic
-		}
-		if resp.RuleGroupResponse.SourceMetadata != nil {
-			f0f11 := &svcapitypes.SourceMetadata{}
-			if resp.RuleGroupResponse.SourceMetadata.SourceArn != nil {
-				f0f11.SourceARN = resp.RuleGroupResponse.SourceMetadata.SourceArn
-			}
-			if resp.RuleGroupResponse.SourceMetadata.SourceUpdateToken != nil {
-				f0f11.SourceUpdateToken = resp.RuleGroupResponse.SourceMetadata.SourceUpdateToken
-			}
-			f0.SourceMetadata = f0f11
-		}
-		if resp.RuleGroupResponse.Tags != nil {
-			f0f12 := []*svcapitypes.Tag{}
-			for _, f0f12iter := range resp.RuleGroupResponse.Tags {
-				f0f12elem := &svcapitypes.Tag{}
-				if f0f12iter.Key != nil {
-					f0f12elem.Key = f0f12iter.Key
-				}
-				if f0f12iter.Value != nil {
-					f0f12elem.Value = f0f12iter.Value
-				}
-				f0f12 = append(f0f12, f0f12elem)
-			}
-			f0.Tags = f0f12
-		}
-		if resp.RuleGroupResponse.Type != nil {
-			f0.Type = resp.RuleGroupResponse.Type
-		}
-		ko.Status.RuleGroupResponse = f0
-	} else {
-		ko.Status.RuleGroupResponse = nil
-	}
-	if resp.UpdateToken != nil {
-		ko.Status.UpdateToken = resp.UpdateToken
-	} else {
-		ko.Status.UpdateToken = nil
-	}
-
-	rm.setStatusDefaults(ko)
-	return &resource{ko}, nil
-}
-
-// newUpdateRequestPayload returns an SDK-specific struct for the HTTP request
-// payload of the Update API call for the resource
-func (rm *resourceManager) newUpdateRequestPayload(
-	ctx context.Context,
-	r *resource,
-	delta *ackcompare.Delta,
-) (*svcsdk.UpdateRuleGroupInput, error) {
-	res := &svcsdk.UpdateRuleGroupInput{}
-
-	if r.ko.Spec.Description != nil {
-		res.SetDescription(*r.ko.Spec.Description)
-	}
-	if r.ko.Spec.DryRun != nil {
-		res.SetDryRun(*r.ko.Spec.DryRun)
-	}
-	if r.ko.Spec.EncryptionConfiguration != nil {
-		f2 := &svcsdk.EncryptionConfiguration{}
-		if r.ko.Spec.EncryptionConfiguration.KeyID != nil {
-			f2.SetKeyId(*r.ko.Spec.EncryptionConfiguration.KeyID)
-		}
-		if r.ko.Spec.EncryptionConfiguration.Type != nil {
-			f2.SetType(*r.ko.Spec.EncryptionConfiguration.Type)
-		}
-		res.SetEncryptionConfiguration(f2)
-	}
-	if r.ko.Spec.RuleGroup != nil {
-		f3 := &svcsdk.RuleGroup{}
-		if r.ko.Spec.RuleGroup.ReferenceSets != nil {
-			f3f0 := &svcsdk.ReferenceSets{}
-			if r.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences != nil {
-				f3f0f0 := map[string]*svcsdk.IPSetReference{}
-				for f3f0f0key, f3f0f0valiter := range r.ko.Spec.RuleGroup.ReferenceSets.IPSetReferences {
-					f3f0f0val := &svcsdk.IPSetReference{}
-					if f3f0f0valiter.ReferenceARN != nil {
-						f3f0f0val.SetReferenceArn(*f3f0f0valiter.ReferenceARN)
-					}
-					f3f0f0[f3f0f0key] = f3f0f0val
-				}
-				f3f0.SetIPSetReferences(f3f0f0)
-			}
-			f3.SetReferenceSets(f3f0)
-		}
-		if r.ko.Spec.RuleGroup.RuleVariables != nil {
-			f3f1 := &svcsdk.RuleVariables{}
-			if r.ko.Spec.RuleGroup.RuleVariables.IPSets != nil {
-				f3f1f0 := map[string]*svcsdk.IPSet{}
-				for f3f1f0key, f3f1f0valiter := range r.ko.Spec.RuleGroup.RuleVariables.IPSets {
-					f3f1f0val := &svcsdk.IPSet{}
-					if f3f1f0valiter.Definition != nil {
-						f3f1f0valf0 := []*string{}
-						for _, f3f1f0valf0iter := range f3f1f0valiter.Definition {
-							var f3f1f0valf0elem string
-							f3f1f0valf0elem = *f3f1f0valf0iter
-							f3f1f0valf0 = append(f3f1f0valf0, &f3f1f0valf0elem)
-						}
-						f3f1f0val.SetDefinition(f3f1f0valf0)
-					}
-					f3f1f0[f3f1f0key] = f3f1f0val
-				}
-				f3f1.SetIPSets(f3f1f0)
-			}
-			if r.ko.Spec.RuleGroup.RuleVariables.PortSets != nil {
-				f3f1f1 := map[string]*svcsdk.PortSet{}
-				for f3f1f1key, f3f1f1valiter := range r.ko.Spec.RuleGroup.RuleVariables.PortSets {
-					f3f1f1val := &svcsdk.PortSet{}
-					if f3f1f1valiter.Definition != nil {
-						f3f1f1valf0 := []*string{}
-						for _, f3f1f1valf0iter := range f3f1f1valiter.Definition {
-							var f3f1f1valf0elem string
-							f3f1f1valf0elem = *f3f1f1valf0iter
-							f3f1f1valf0 = append(f3f1f1valf0, &f3f1f1valf0elem)
-						}
-						f3f1f1val.SetDefinition(f3f1f1valf0)
-					}
-					f3f1f1[f3f1f1key] = f3f1f1val
-				}
-				f3f1.SetPortSets(f3f1f1)
-			}
-			f3.SetRuleVariables(f3f1)
-		}
-		if r.ko.Spec.RuleGroup.RulesSource != nil {
-			f3f2 := &svcsdk.RulesSource{}
-			if r.ko.Spec.RuleGroup.RulesSource.RulesSourceList != nil {
-				f3f2f0 := &svcsdk.RulesSourceList{}
-				if r.ko.Spec.RuleGroup.RulesSource.RulesSourceList.GeneratedRulesType != nil {
-					f3f2f0.SetGeneratedRulesType(*r.ko.Spec.RuleGroup.RulesSource.RulesSourceList.GeneratedRulesType)
-				}
-				if r.ko.Spec.RuleGroup.RulesSource.RulesSourceList.TargetTypes != nil {
-					f3f2f0f1 := []*string{}
-					for _, f3f2f0f1iter := range r.ko.Spec.RuleGroup.RulesSource.RulesSourceList.TargetTypes {
-						var f3f2f0f1elem string
-						f3f2f0f1elem = *f3f2f0f1iter
-						f3f2f0f1 = append(f3f2f0f1, &f3f2f0f1elem)
-					}
-					f3f2f0.SetTargetTypes(f3f2f0f1)
-				}
-				if r.ko.Spec.RuleGroup.RulesSource.RulesSourceList.Targets != nil {
-					f3f2f0f2 := []*string{}
-					for _, f3f2f0f2iter := range r.ko.Spec.RuleGroup.RulesSource.RulesSourceList.Targets {
-						var f3f2f0f2elem string
-						f3f2f0f2elem = *f3f2f0f2iter
-						f3f2f0f2 = append(f3f2f0f2, &f3f2f0f2elem)
-					}
-					f3f2f0.SetTargets(f3f2f0f2)
-				}
-				f3f2.SetRulesSourceList(f3f2f0)
-			}
-			if r.ko.Spec.RuleGroup.RulesSource.RulesString != nil {
-				f3f2.SetRulesString(*r.ko.Spec.RuleGroup.RulesSource.RulesString)
-			}
-			if r.ko.Spec.RuleGroup.RulesSource.StatefulRules != nil {
-				f3f2f2 := []*svcsdk.StatefulRule{}
-				for _, f3f2f2iter := range r.ko.Spec.RuleGroup.RulesSource.StatefulRules {
-					f3f2f2elem := &svcsdk.StatefulRule{}
-					if f3f2f2iter.Action != nil {
-						f3f2f2elem.SetAction(*f3f2f2iter.Action)
-					}
-					if f3f2f2iter.Header != nil {
-						f3f2f2elemf1 := &svcsdk.Header{}
-						if f3f2f2iter.Header.Destination != nil {
-							f3f2f2elemf1.SetDestination(*f3f2f2iter.Header.Destination)
-						}
-						if f3f2f2iter.Header.DestinationPort != nil {
-							f3f2f2elemf1.SetDestinationPort(*f3f2f2iter.Header.DestinationPort)
-						}
-						if f3f2f2iter.Header.Direction != nil {
-							f3f2f2elemf1.SetDirection(*f3f2f2iter.Header.Direction)
-						}
-						if f3f2f2iter.Header.Protocol != nil {
-							f3f2f2elemf1.SetProtocol(*f3f2f2iter.Header.Protocol)
-						}
-						if f3f2f2iter.Header.Source != nil {
-							f3f2f2elemf1.SetSource(*f3f2f2iter.Header.Source)
-						}
-						if f3f2f2iter.Header.SourcePort != nil {
-							f3f2f2elemf1.SetSourcePort(*f3f2f2iter.Header.SourcePort)
-						}
-						f3f2f2elem.SetHeader(f3f2f2elemf1)
-					}
-					if f3f2f2iter.RuleOptions != nil {
-						f3f2f2elemf2 := []*svcsdk.RuleOption{}
-						for _, f3f2f2elemf2iter := range f3f2f2iter.RuleOptions {
-							f3f2f2elemf2elem := &svcsdk.RuleOption{}
-							if f3f2f2elemf2iter.Keyword != nil {
-								f3f2f2elemf2elem.SetKeyword(*f3f2f2elemf2iter.Keyword)
-							}
-							if f3f2f2elemf2iter.Settings != nil {
-								f3f2f2elemf2elemf1 := []*string{}
-								for _, f3f2f2elemf2elemf1iter := range f3f2f2elemf2iter.Settings {
-									var f3f2f2elemf2elemf1elem string
-									f3f2f2elemf2elemf1elem = *f3f2f2elemf2elemf1iter
-									f3f2f2elemf2elemf1 = append(f3f2f2elemf2elemf1, &f3f2f2elemf2elemf1elem)
-								}
-								f3f2f2elemf2elem.SetSettings(f3f2f2elemf2elemf1)
-							}
-							f3f2f2elemf2 = append(f3f2f2elemf2, f3f2f2elemf2elem)
-						}
-						f3f2f2elem.SetRuleOptions(f3f2f2elemf2)
-					}
-					f3f2f2 = append(f3f2f2, f3f2f2elem)
-				}
-				f3f2.SetStatefulRules(f3f2f2)
-			}
-			if r.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions != nil {
-				f3f2f3 := &svcsdk.StatelessRulesAndCustomActions{}
-				if r.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.CustomActions != nil {
-					f3f2f3f0 := []*svcsdk.CustomAction{}
-					for _, f3f2f3f0iter := range r.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.CustomActions {
-						f3f2f3f0elem := &svcsdk.CustomAction{}
-						if f3f2f3f0iter.ActionDefinition != nil {
-							f3f2f3f0elemf0 := &svcsdk.ActionDefinition{}
-							if f3f2f3f0iter.ActionDefinition.PublishMetricAction != nil {
-								f3f2f3f0elemf0f0 := &svcsdk.PublishMetricAction{}
-								if f3f2f3f0iter.ActionDefinition.PublishMetricAction.Dimensions != nil {
-									f3f2f3f0elemf0f0f0 := []*svcsdk.Dimension{}
-									for _, f3f2f3f0elemf0f0f0iter := range f3f2f3f0iter.ActionDefinition.PublishMetricAction.Dimensions {
-										f3f2f3f0elemf0f0f0elem := &svcsdk.Dimension{}
-										if f3f2f3f0elemf0f0f0iter.Value != nil {
-											f3f2f3f0elemf0f0f0elem.SetValue(*f3f2f3f0elemf0f0f0iter.Value)
-										}
-										f3f2f3f0elemf0f0f0 = append(f3f2f3f0elemf0f0f0, f3f2f3f0elemf0f0f0elem)
-									}
-									f3f2f3f0elemf0f0.SetDimensions(f3f2f3f0elemf0f0f0)
-								}
-								f3f2f3f0elemf0.SetPublishMetricAction(f3f2f3f0elemf0f0)
-							}
-							f3f2f3f0elem.SetActionDefinition(f3f2f3f0elemf0)
-						}
-						if f3f2f3f0iter.ActionName != nil {
-							f3f2f3f0elem.SetActionName(*f3f2f3f0iter.ActionName)
-						}
-						f3f2f3f0 = append(f3f2f3f0, f3f2f3f0elem)
-					}
-					f3f2f3.SetCustomActions(f3f2f3f0)
-				}
-				if r.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.StatelessRules != nil {
-					f3f2f3f1 := []*svcsdk.StatelessRule{}
-					for _, f3f2f3f1iter := range r.ko.Spec.RuleGroup.RulesSource.StatelessRulesAndCustomActions.StatelessRules {
-						f3f2f3f1elem := &svcsdk.StatelessRule{}
-						if f3f2f3f1iter.Priority != nil {
-							f3f2f3f1elem.SetPriority(*f3f2f3f1iter.Priority)
-						}
-						if f3f2f3f1iter.RuleDefinition != nil {
-							f3f2f3f1elemf1 := &svcsdk.RuleDefinition{}
-							if f3f2f3f1iter.RuleDefinition.Actions != nil {
-								f3f2f3f1elemf1f0 := []*string{}
-								for _, f3f2f3f1elemf1f0iter := range f3f2f3f1iter.RuleDefinition.Actions {
-									var f3f2f3f1elemf1f0elem string
-									f3f2f3f1elemf1f0elem = *f3f2f3f1elemf1f0iter
-									f3f2f3f1elemf1f0 = append(f3f2f3f1elemf1f0, &f3f2f3f1elemf1f0elem)
-								}
-								f3f2f3f1elemf1.SetActions(f3f2f3f1elemf1f0)
-							}
-							if f3f2f3f1iter.RuleDefinition.MatchAttributes != nil {
-								f3f2f3f1elemf1f1 := &svcsdk.MatchAttributes{}
-								if f3f2f3f1iter.RuleDefinition.MatchAttributes.DestinationPorts != nil {
-									f3f2f3f1elemf1f1f0 := []*svcsdk.PortRange{}
-									for _, f3f2f3f1elemf1f1f0iter := range f3f2f3f1iter.RuleDefinition.MatchAttributes.DestinationPorts {
-										f3f2f3f1elemf1f1f0elem := &svcsdk.PortRange{}
-										if f3f2f3f1elemf1f1f0iter.FromPort != nil {
-											f3f2f3f1elemf1f1f0elem.SetFromPort(*f3f2f3f1elemf1f1f0iter.FromPort)
-										}
-										if f3f2f3f1elemf1f1f0iter.ToPort != nil {
-											f3f2f3f1elemf1f1f0elem.SetToPort(*f3f2f3f1elemf1f1f0iter.ToPort)
-										}
-										f3f2f3f1elemf1f1f0 = append(f3f2f3f1elemf1f1f0, f3f2f3f1elemf1f1f0elem)
-									}
-									f3f2f3f1elemf1f1.SetDestinationPorts(f3f2f3f1elemf1f1f0)
-								}
-								if f3f2f3f1iter.RuleDefinition.MatchAttributes.Destinations != nil {
-									f3f2f3f1elemf1f1f1 := []*svcsdk.Address{}
-									for _, f3f2f3f1elemf1f1f1iter := range f3f2f3f1iter.RuleDefinition.MatchAttributes.Destinations {
-										f3f2f3f1elemf1f1f1elem := &svcsdk.Address{}
-										if f3f2f3f1elemf1f1f1iter.AddressDefinition != nil {
-											f3f2f3f1elemf1f1f1elem.SetAddressDefinition(*f3f2f3f1elemf1f1f1iter.AddressDefinition)
-										}
-										f3f2f3f1elemf1f1f1 = append(f3f2f3f1elemf1f1f1, f3f2f3f1elemf1f1f1elem)
-									}
-									f3f2f3f1elemf1f1.SetDestinations(f3f2f3f1elemf1f1f1)
-								}
-								if f3f2f3f1iter.RuleDefinition.MatchAttributes.Protocols != nil {
-									f3f2f3f1elemf1f1f2 := []*int64{}
-									for _, f3f2f3f1elemf1f1f2iter := range f3f2f3f1iter.RuleDefinition.MatchAttributes.Protocols {
-										var f3f2f3f1elemf1f1f2elem int64
-										f3f2f3f1elemf1f1f2elem = *f3f2f3f1elemf1f1f2iter
-										f3f2f3f1elemf1f1f2 = append(f3f2f3f1elemf1f1f2, &f3f2f3f1elemf1f1f2elem)
-									}
-									f3f2f3f1elemf1f1.SetProtocols(f3f2f3f1elemf1f1f2)
-								}
-								if f3f2f3f1iter.RuleDefinition.MatchAttributes.SourcePorts != nil {
-									f3f2f3f1elemf1f1f3 := []*svcsdk.PortRange{}
-									for _, f3f2f3f1elemf1f1f3iter := range f3f2f3f1iter.RuleDefinition.MatchAttributes.SourcePorts {
-										f3f2f3f1elemf1f1f3elem := &svcsdk.PortRange{}
-										if f3f2f3f1elemf1f1f3iter.FromPort != nil {
-											f3f2f3f1elemf1f1f3elem.SetFromPort(*f3f2f3f1elemf1f1f3iter.FromPort)
-										}
-										if f3f2f3f1elemf1f1f3iter.ToPort != nil {
-											f3f2f3f1elemf1f1f3elem.SetToPort(*f3f2f3f1elemf1f1f3iter.ToPort)
-										}
-										f3f2f3f1elemf1f1f3 = append(f3f2f3f1elemf1f1f3, f3f2f3f1elemf1f1f3elem)
-									}
-									f3f2f3f1elemf1f1.SetSourcePorts(f3f2f3f1elemf1f1f3)
-								}
-								if f3f2f3f1iter.RuleDefinition.MatchAttributes.Sources != nil {
-									f3f2f3f1elemf1f1f4 := []*svcsdk.Address{}
-									for _, f3f2f3f1elemf1f1f4iter := range f3f2f3f1iter.RuleDefinition.MatchAttributes.Sources {
-										f3f2f3f1elemf1f1f4elem := &svcsdk.Address{}
-										if f3f2f3f1elemf1f1f4iter.AddressDefinition != nil {
-											f3f2f3f1elemf1f1f4elem.SetAddressDefinition(*f3f2f3f1elemf1f1f4iter.AddressDefinition)
-										}
-										f3f2f3f1elemf1f1f4 = append(f3f2f3f1elemf1f1f4, f3f2f3f1elemf1f1f4elem)
-									}
-									f3f2f3f1elemf1f1.SetSources(f3f2f3f1elemf1f1f4)
-								}
-								if f3f2f3f1iter.RuleDefinition.MatchAttributes.TCPFlags != nil {
-									f3f2f3f1elemf1f1f5 := []*svcsdk.TCPFlagField{}
-									for _, f3f2f3f1elemf1f1f5iter := range f3f2f3f1iter.RuleDefinition.MatchAttributes.TCPFlags {
-										f3f2f3f1elemf1f1f5elem := &svcsdk.TCPFlagField{}
-										if f3f2f3f1elemf1f1f5iter.Flags != nil {
-											f3f2f3f1elemf1f1f5elemf0 := []*string{}
-											for _, f3f2f3f1elemf1f1f5elemf0iter := range f3f2f3f1elemf1f1f5iter.Flags {
-												var f3f2f3f1elemf1f1f5elemf0elem string
-												f3f2f3f1elemf1f1f5elemf0elem = *f3f2f3f1elemf1f1f5elemf0iter
-												f3f2f3f1elemf1f1f5elemf0 = append(f3f2f3f1elemf1f1f5elemf0, &f3f2f3f1elemf1f1f5elemf0elem)
-											}
-											f3f2f3f1elemf1f1f5elem.SetFlags(f3f2f3f1elemf1f1f5elemf0)
-										}
-										if f3f2f3f1elemf1f1f5iter.Masks != nil {
-											f3f2f3f1elemf1f1f5elemf1 := []*string{}
-											for _, f3f2f3f1elemf1f1f5elemf1iter := range f3f2f3f1elemf1f1f5iter.Masks {
-												var f3f2f3f1elemf1f1f5elemf1elem string
-												f3f2f3f1elemf1f1f5elemf1elem = *f3f2f3f1elemf1f1f5elemf1iter
-												f3f2f3f1elemf1f1f5elemf1 = append(f3f2f3f1elemf1f1f5elemf1, &f3f2f3f1elemf1f1f5elemf1elem)
-											}
-											f3f2f3f1elemf1f1f5elem.SetMasks(f3f2f3f1elemf1f1f5elemf1)
-										}
-										f3f2f3f1elemf1f1f5 = append(f3f2f3f1elemf1f1f5, f3f2f3f1elemf1f1f5elem)
-									}
-									f3f2f3f1elemf1f1.SetTCPFlags(f3f2f3f1elemf1f1f5)
-								}
-								f3f2f3f1elemf1.SetMatchAttributes(f3f2f3f1elemf1f1)
-							}
-							f3f2f3f1elem.SetRuleDefinition(f3f2f3f1elemf1)
-						}
-						f3f2f3f1 = append(f3f2f3f1, f3f2f3f1elem)
-					}
-					f3f2f3.SetStatelessRules(f3f2f3f1)
-				}
-				f3f2.SetStatelessRulesAndCustomActions(f3f2f3)
-			}
-			f3.SetRulesSource(f3f2)
-		}
-		if r.ko.Spec.RuleGroup.StatefulRuleOptions != nil {
-			f3f3 := &svcsdk.StatefulRuleOptions{}
-			if r.ko.Spec.RuleGroup.StatefulRuleOptions.RuleOrder != nil {
-				f3f3.SetRuleOrder(*r.ko.Spec.RuleGroup.StatefulRuleOptions.RuleOrder)
-			}
-			f3.SetStatefulRuleOptions(f3f3)
-		}
-		res.SetRuleGroup(f3)
-	}
 	if r.ko.Status.ACKResourceMetadata != nil && r.ko.Status.ACKResourceMetadata.ARN != nil {
 		res.SetRuleGroupArn(string(*r.ko.Status.ACKResourceMetadata.ARN))
 	}
@@ -1414,14 +1492,14 @@ func (rm *resourceManager) newUpdateRequestPayload(
 		res.SetRules(*r.ko.Spec.Rules)
 	}
 	if r.ko.Spec.SourceMetadata != nil {
-		f7 := &svcsdk.SourceMetadata{}
+		f8 := &svcsdk.SourceMetadata{}
 		if r.ko.Spec.SourceMetadata.SourceARN != nil {
-			f7.SetSourceArn(*r.ko.Spec.SourceMetadata.SourceARN)
+			f8.SetSourceArn(*r.ko.Spec.SourceMetadata.SourceARN)
 		}
 		if r.ko.Spec.SourceMetadata.SourceUpdateToken != nil {
-			f7.SetSourceUpdateToken(*r.ko.Spec.SourceMetadata.SourceUpdateToken)
+			f8.SetSourceUpdateToken(*r.ko.Spec.SourceMetadata.SourceUpdateToken)
 		}
-		res.SetSourceMetadata(f7)
+		res.SetSourceMetadata(f8)
 	}
 	if r.ko.Spec.Type != nil {
 		res.SetType(*r.ko.Spec.Type)
