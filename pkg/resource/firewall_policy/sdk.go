@@ -92,104 +92,131 @@ func (rm *resourceManager) sdkFind(
 
 	if resp.FirewallPolicy != nil {
 		f0 := &svcapitypes.FirewallPolicy_SDK{}
-		if resp.FirewallPolicy.StatefulDefaultActions != nil {
-			f0f0 := []*string{}
-			for _, f0f0iter := range resp.FirewallPolicy.StatefulDefaultActions {
-				var f0f0elem string
-				f0f0elem = *f0f0iter
-				f0f0 = append(f0f0, &f0f0elem)
+		if resp.FirewallPolicy.PolicyVariables != nil {
+			f0f0 := &svcapitypes.PolicyVariables{}
+			if resp.FirewallPolicy.PolicyVariables.RuleVariables != nil {
+				f0f0f0 := map[string]*svcapitypes.IPSet{}
+				for f0f0f0key, f0f0f0valiter := range resp.FirewallPolicy.PolicyVariables.RuleVariables {
+					f0f0f0val := &svcapitypes.IPSet{}
+					if f0f0f0valiter.Definition != nil {
+						f0f0f0valf0 := []*string{}
+						for _, f0f0f0valf0iter := range f0f0f0valiter.Definition {
+							var f0f0f0valf0elem string
+							f0f0f0valf0elem = *f0f0f0valf0iter
+							f0f0f0valf0 = append(f0f0f0valf0, &f0f0f0valf0elem)
+						}
+						f0f0f0val.Definition = f0f0f0valf0
+					}
+					f0f0f0[f0f0f0key] = f0f0f0val
+				}
+				f0f0.RuleVariables = f0f0f0
 			}
-			f0.StatefulDefaultActions = f0f0
+			f0.PolicyVariables = f0f0
+		}
+		if resp.FirewallPolicy.StatefulDefaultActions != nil {
+			f0f1 := []*string{}
+			for _, f0f1iter := range resp.FirewallPolicy.StatefulDefaultActions {
+				var f0f1elem string
+				f0f1elem = *f0f1iter
+				f0f1 = append(f0f1, &f0f1elem)
+			}
+			f0.StatefulDefaultActions = f0f1
 		}
 		if resp.FirewallPolicy.StatefulEngineOptions != nil {
-			f0f1 := &svcapitypes.StatefulEngineOptions{}
+			f0f2 := &svcapitypes.StatefulEngineOptions{}
 			if resp.FirewallPolicy.StatefulEngineOptions.RuleOrder != nil {
-				f0f1.RuleOrder = resp.FirewallPolicy.StatefulEngineOptions.RuleOrder
+				f0f2.RuleOrder = resp.FirewallPolicy.StatefulEngineOptions.RuleOrder
 			}
-			f0.StatefulEngineOptions = f0f1
+			if resp.FirewallPolicy.StatefulEngineOptions.StreamExceptionPolicy != nil {
+				f0f2.StreamExceptionPolicy = resp.FirewallPolicy.StatefulEngineOptions.StreamExceptionPolicy
+			}
+			f0.StatefulEngineOptions = f0f2
 		}
 		if resp.FirewallPolicy.StatefulRuleGroupReferences != nil {
-			f0f2 := []*svcapitypes.StatefulRuleGroupReference{}
-			for _, f0f2iter := range resp.FirewallPolicy.StatefulRuleGroupReferences {
-				f0f2elem := &svcapitypes.StatefulRuleGroupReference{}
-				if f0f2iter.Override != nil {
-					f0f2elemf0 := &svcapitypes.StatefulRuleGroupOverride{}
-					if f0f2iter.Override.Action != nil {
-						f0f2elemf0.Action = f0f2iter.Override.Action
+			f0f3 := []*svcapitypes.StatefulRuleGroupReference{}
+			for _, f0f3iter := range resp.FirewallPolicy.StatefulRuleGroupReferences {
+				f0f3elem := &svcapitypes.StatefulRuleGroupReference{}
+				if f0f3iter.Override != nil {
+					f0f3elemf0 := &svcapitypes.StatefulRuleGroupOverride{}
+					if f0f3iter.Override.Action != nil {
+						f0f3elemf0.Action = f0f3iter.Override.Action
 					}
-					f0f2elem.Override = f0f2elemf0
+					f0f3elem.Override = f0f3elemf0
 				}
-				if f0f2iter.Priority != nil {
-					f0f2elem.Priority = f0f2iter.Priority
+				if f0f3iter.Priority != nil {
+					f0f3elem.Priority = f0f3iter.Priority
 				}
-				if f0f2iter.ResourceArn != nil {
-					f0f2elem.ResourceARN = f0f2iter.ResourceArn
-				}
-				f0f2 = append(f0f2, f0f2elem)
-			}
-			f0.StatefulRuleGroupReferences = f0f2
-		}
-		if resp.FirewallPolicy.StatelessCustomActions != nil {
-			f0f3 := []*svcapitypes.CustomAction{}
-			for _, f0f3iter := range resp.FirewallPolicy.StatelessCustomActions {
-				f0f3elem := &svcapitypes.CustomAction{}
-				if f0f3iter.ActionDefinition != nil {
-					f0f3elemf0 := &svcapitypes.ActionDefinition{}
-					if f0f3iter.ActionDefinition.PublishMetricAction != nil {
-						f0f3elemf0f0 := &svcapitypes.PublishMetricAction{}
-						if f0f3iter.ActionDefinition.PublishMetricAction.Dimensions != nil {
-							f0f3elemf0f0f0 := []*svcapitypes.Dimension{}
-							for _, f0f3elemf0f0f0iter := range f0f3iter.ActionDefinition.PublishMetricAction.Dimensions {
-								f0f3elemf0f0f0elem := &svcapitypes.Dimension{}
-								if f0f3elemf0f0f0iter.Value != nil {
-									f0f3elemf0f0f0elem.Value = f0f3elemf0f0f0iter.Value
-								}
-								f0f3elemf0f0f0 = append(f0f3elemf0f0f0, f0f3elemf0f0f0elem)
-							}
-							f0f3elemf0f0.Dimensions = f0f3elemf0f0f0
-						}
-						f0f3elemf0.PublishMetricAction = f0f3elemf0f0
-					}
-					f0f3elem.ActionDefinition = f0f3elemf0
-				}
-				if f0f3iter.ActionName != nil {
-					f0f3elem.ActionName = f0f3iter.ActionName
+				if f0f3iter.ResourceArn != nil {
+					f0f3elem.ResourceARN = f0f3iter.ResourceArn
 				}
 				f0f3 = append(f0f3, f0f3elem)
 			}
-			f0.StatelessCustomActions = f0f3
+			f0.StatefulRuleGroupReferences = f0f3
+		}
+		if resp.FirewallPolicy.StatelessCustomActions != nil {
+			f0f4 := []*svcapitypes.CustomAction{}
+			for _, f0f4iter := range resp.FirewallPolicy.StatelessCustomActions {
+				f0f4elem := &svcapitypes.CustomAction{}
+				if f0f4iter.ActionDefinition != nil {
+					f0f4elemf0 := &svcapitypes.ActionDefinition{}
+					if f0f4iter.ActionDefinition.PublishMetricAction != nil {
+						f0f4elemf0f0 := &svcapitypes.PublishMetricAction{}
+						if f0f4iter.ActionDefinition.PublishMetricAction.Dimensions != nil {
+							f0f4elemf0f0f0 := []*svcapitypes.Dimension{}
+							for _, f0f4elemf0f0f0iter := range f0f4iter.ActionDefinition.PublishMetricAction.Dimensions {
+								f0f4elemf0f0f0elem := &svcapitypes.Dimension{}
+								if f0f4elemf0f0f0iter.Value != nil {
+									f0f4elemf0f0f0elem.Value = f0f4elemf0f0f0iter.Value
+								}
+								f0f4elemf0f0f0 = append(f0f4elemf0f0f0, f0f4elemf0f0f0elem)
+							}
+							f0f4elemf0f0.Dimensions = f0f4elemf0f0f0
+						}
+						f0f4elemf0.PublishMetricAction = f0f4elemf0f0
+					}
+					f0f4elem.ActionDefinition = f0f4elemf0
+				}
+				if f0f4iter.ActionName != nil {
+					f0f4elem.ActionName = f0f4iter.ActionName
+				}
+				f0f4 = append(f0f4, f0f4elem)
+			}
+			f0.StatelessCustomActions = f0f4
 		}
 		if resp.FirewallPolicy.StatelessDefaultActions != nil {
-			f0f4 := []*string{}
-			for _, f0f4iter := range resp.FirewallPolicy.StatelessDefaultActions {
-				var f0f4elem string
-				f0f4elem = *f0f4iter
-				f0f4 = append(f0f4, &f0f4elem)
-			}
-			f0.StatelessDefaultActions = f0f4
-		}
-		if resp.FirewallPolicy.StatelessFragmentDefaultActions != nil {
 			f0f5 := []*string{}
-			for _, f0f5iter := range resp.FirewallPolicy.StatelessFragmentDefaultActions {
+			for _, f0f5iter := range resp.FirewallPolicy.StatelessDefaultActions {
 				var f0f5elem string
 				f0f5elem = *f0f5iter
 				f0f5 = append(f0f5, &f0f5elem)
 			}
-			f0.StatelessFragmentDefaultActions = f0f5
+			f0.StatelessDefaultActions = f0f5
+		}
+		if resp.FirewallPolicy.StatelessFragmentDefaultActions != nil {
+			f0f6 := []*string{}
+			for _, f0f6iter := range resp.FirewallPolicy.StatelessFragmentDefaultActions {
+				var f0f6elem string
+				f0f6elem = *f0f6iter
+				f0f6 = append(f0f6, &f0f6elem)
+			}
+			f0.StatelessFragmentDefaultActions = f0f6
 		}
 		if resp.FirewallPolicy.StatelessRuleGroupReferences != nil {
-			f0f6 := []*svcapitypes.StatelessRuleGroupReference{}
-			for _, f0f6iter := range resp.FirewallPolicy.StatelessRuleGroupReferences {
-				f0f6elem := &svcapitypes.StatelessRuleGroupReference{}
-				if f0f6iter.Priority != nil {
-					f0f6elem.Priority = f0f6iter.Priority
+			f0f7 := []*svcapitypes.StatelessRuleGroupReference{}
+			for _, f0f7iter := range resp.FirewallPolicy.StatelessRuleGroupReferences {
+				f0f7elem := &svcapitypes.StatelessRuleGroupReference{}
+				if f0f7iter.Priority != nil {
+					f0f7elem.Priority = f0f7iter.Priority
 				}
-				if f0f6iter.ResourceArn != nil {
-					f0f6elem.ResourceARN = f0f6iter.ResourceArn
+				if f0f7iter.ResourceArn != nil {
+					f0f7elem.ResourceARN = f0f7iter.ResourceArn
 				}
-				f0f6 = append(f0f6, f0f6elem)
+				f0f7 = append(f0f7, f0f7elem)
 			}
-			f0.StatelessRuleGroupReferences = f0f6
+			f0.StatelessRuleGroupReferences = f0f7
+		}
+		if resp.FirewallPolicy.TLSInspectionConfigurationArn != nil {
+			f0.TLSInspectionConfigurationARN = resp.FirewallPolicy.TLSInspectionConfigurationArn
 		}
 		ko.Spec.FirewallPolicy = f0
 	} else {
@@ -406,104 +433,131 @@ func (rm *resourceManager) newCreateRequestPayload(
 	}
 	if r.ko.Spec.FirewallPolicy != nil {
 		f2 := &svcsdk.FirewallPolicy{}
-		if r.ko.Spec.FirewallPolicy.StatefulDefaultActions != nil {
-			f2f0 := []*string{}
-			for _, f2f0iter := range r.ko.Spec.FirewallPolicy.StatefulDefaultActions {
-				var f2f0elem string
-				f2f0elem = *f2f0iter
-				f2f0 = append(f2f0, &f2f0elem)
+		if r.ko.Spec.FirewallPolicy.PolicyVariables != nil {
+			f2f0 := &svcsdk.PolicyVariables{}
+			if r.ko.Spec.FirewallPolicy.PolicyVariables.RuleVariables != nil {
+				f2f0f0 := map[string]*svcsdk.IPSet{}
+				for f2f0f0key, f2f0f0valiter := range r.ko.Spec.FirewallPolicy.PolicyVariables.RuleVariables {
+					f2f0f0val := &svcsdk.IPSet{}
+					if f2f0f0valiter.Definition != nil {
+						f2f0f0valf0 := []*string{}
+						for _, f2f0f0valf0iter := range f2f0f0valiter.Definition {
+							var f2f0f0valf0elem string
+							f2f0f0valf0elem = *f2f0f0valf0iter
+							f2f0f0valf0 = append(f2f0f0valf0, &f2f0f0valf0elem)
+						}
+						f2f0f0val.SetDefinition(f2f0f0valf0)
+					}
+					f2f0f0[f2f0f0key] = f2f0f0val
+				}
+				f2f0.SetRuleVariables(f2f0f0)
 			}
-			f2.SetStatefulDefaultActions(f2f0)
+			f2.SetPolicyVariables(f2f0)
+		}
+		if r.ko.Spec.FirewallPolicy.StatefulDefaultActions != nil {
+			f2f1 := []*string{}
+			for _, f2f1iter := range r.ko.Spec.FirewallPolicy.StatefulDefaultActions {
+				var f2f1elem string
+				f2f1elem = *f2f1iter
+				f2f1 = append(f2f1, &f2f1elem)
+			}
+			f2.SetStatefulDefaultActions(f2f1)
 		}
 		if r.ko.Spec.FirewallPolicy.StatefulEngineOptions != nil {
-			f2f1 := &svcsdk.StatefulEngineOptions{}
+			f2f2 := &svcsdk.StatefulEngineOptions{}
 			if r.ko.Spec.FirewallPolicy.StatefulEngineOptions.RuleOrder != nil {
-				f2f1.SetRuleOrder(*r.ko.Spec.FirewallPolicy.StatefulEngineOptions.RuleOrder)
+				f2f2.SetRuleOrder(*r.ko.Spec.FirewallPolicy.StatefulEngineOptions.RuleOrder)
 			}
-			f2.SetStatefulEngineOptions(f2f1)
+			if r.ko.Spec.FirewallPolicy.StatefulEngineOptions.StreamExceptionPolicy != nil {
+				f2f2.SetStreamExceptionPolicy(*r.ko.Spec.FirewallPolicy.StatefulEngineOptions.StreamExceptionPolicy)
+			}
+			f2.SetStatefulEngineOptions(f2f2)
 		}
 		if r.ko.Spec.FirewallPolicy.StatefulRuleGroupReferences != nil {
-			f2f2 := []*svcsdk.StatefulRuleGroupReference{}
-			for _, f2f2iter := range r.ko.Spec.FirewallPolicy.StatefulRuleGroupReferences {
-				f2f2elem := &svcsdk.StatefulRuleGroupReference{}
-				if f2f2iter.Override != nil {
-					f2f2elemf0 := &svcsdk.StatefulRuleGroupOverride{}
-					if f2f2iter.Override.Action != nil {
-						f2f2elemf0.SetAction(*f2f2iter.Override.Action)
+			f2f3 := []*svcsdk.StatefulRuleGroupReference{}
+			for _, f2f3iter := range r.ko.Spec.FirewallPolicy.StatefulRuleGroupReferences {
+				f2f3elem := &svcsdk.StatefulRuleGroupReference{}
+				if f2f3iter.Override != nil {
+					f2f3elemf0 := &svcsdk.StatefulRuleGroupOverride{}
+					if f2f3iter.Override.Action != nil {
+						f2f3elemf0.SetAction(*f2f3iter.Override.Action)
 					}
-					f2f2elem.SetOverride(f2f2elemf0)
+					f2f3elem.SetOverride(f2f3elemf0)
 				}
-				if f2f2iter.Priority != nil {
-					f2f2elem.SetPriority(*f2f2iter.Priority)
+				if f2f3iter.Priority != nil {
+					f2f3elem.SetPriority(*f2f3iter.Priority)
 				}
-				if f2f2iter.ResourceARN != nil {
-					f2f2elem.SetResourceArn(*f2f2iter.ResourceARN)
-				}
-				f2f2 = append(f2f2, f2f2elem)
-			}
-			f2.SetStatefulRuleGroupReferences(f2f2)
-		}
-		if r.ko.Spec.FirewallPolicy.StatelessCustomActions != nil {
-			f2f3 := []*svcsdk.CustomAction{}
-			for _, f2f3iter := range r.ko.Spec.FirewallPolicy.StatelessCustomActions {
-				f2f3elem := &svcsdk.CustomAction{}
-				if f2f3iter.ActionDefinition != nil {
-					f2f3elemf0 := &svcsdk.ActionDefinition{}
-					if f2f3iter.ActionDefinition.PublishMetricAction != nil {
-						f2f3elemf0f0 := &svcsdk.PublishMetricAction{}
-						if f2f3iter.ActionDefinition.PublishMetricAction.Dimensions != nil {
-							f2f3elemf0f0f0 := []*svcsdk.Dimension{}
-							for _, f2f3elemf0f0f0iter := range f2f3iter.ActionDefinition.PublishMetricAction.Dimensions {
-								f2f3elemf0f0f0elem := &svcsdk.Dimension{}
-								if f2f3elemf0f0f0iter.Value != nil {
-									f2f3elemf0f0f0elem.SetValue(*f2f3elemf0f0f0iter.Value)
-								}
-								f2f3elemf0f0f0 = append(f2f3elemf0f0f0, f2f3elemf0f0f0elem)
-							}
-							f2f3elemf0f0.SetDimensions(f2f3elemf0f0f0)
-						}
-						f2f3elemf0.SetPublishMetricAction(f2f3elemf0f0)
-					}
-					f2f3elem.SetActionDefinition(f2f3elemf0)
-				}
-				if f2f3iter.ActionName != nil {
-					f2f3elem.SetActionName(*f2f3iter.ActionName)
+				if f2f3iter.ResourceARN != nil {
+					f2f3elem.SetResourceArn(*f2f3iter.ResourceARN)
 				}
 				f2f3 = append(f2f3, f2f3elem)
 			}
-			f2.SetStatelessCustomActions(f2f3)
+			f2.SetStatefulRuleGroupReferences(f2f3)
+		}
+		if r.ko.Spec.FirewallPolicy.StatelessCustomActions != nil {
+			f2f4 := []*svcsdk.CustomAction{}
+			for _, f2f4iter := range r.ko.Spec.FirewallPolicy.StatelessCustomActions {
+				f2f4elem := &svcsdk.CustomAction{}
+				if f2f4iter.ActionDefinition != nil {
+					f2f4elemf0 := &svcsdk.ActionDefinition{}
+					if f2f4iter.ActionDefinition.PublishMetricAction != nil {
+						f2f4elemf0f0 := &svcsdk.PublishMetricAction{}
+						if f2f4iter.ActionDefinition.PublishMetricAction.Dimensions != nil {
+							f2f4elemf0f0f0 := []*svcsdk.Dimension{}
+							for _, f2f4elemf0f0f0iter := range f2f4iter.ActionDefinition.PublishMetricAction.Dimensions {
+								f2f4elemf0f0f0elem := &svcsdk.Dimension{}
+								if f2f4elemf0f0f0iter.Value != nil {
+									f2f4elemf0f0f0elem.SetValue(*f2f4elemf0f0f0iter.Value)
+								}
+								f2f4elemf0f0f0 = append(f2f4elemf0f0f0, f2f4elemf0f0f0elem)
+							}
+							f2f4elemf0f0.SetDimensions(f2f4elemf0f0f0)
+						}
+						f2f4elemf0.SetPublishMetricAction(f2f4elemf0f0)
+					}
+					f2f4elem.SetActionDefinition(f2f4elemf0)
+				}
+				if f2f4iter.ActionName != nil {
+					f2f4elem.SetActionName(*f2f4iter.ActionName)
+				}
+				f2f4 = append(f2f4, f2f4elem)
+			}
+			f2.SetStatelessCustomActions(f2f4)
 		}
 		if r.ko.Spec.FirewallPolicy.StatelessDefaultActions != nil {
-			f2f4 := []*string{}
-			for _, f2f4iter := range r.ko.Spec.FirewallPolicy.StatelessDefaultActions {
-				var f2f4elem string
-				f2f4elem = *f2f4iter
-				f2f4 = append(f2f4, &f2f4elem)
-			}
-			f2.SetStatelessDefaultActions(f2f4)
-		}
-		if r.ko.Spec.FirewallPolicy.StatelessFragmentDefaultActions != nil {
 			f2f5 := []*string{}
-			for _, f2f5iter := range r.ko.Spec.FirewallPolicy.StatelessFragmentDefaultActions {
+			for _, f2f5iter := range r.ko.Spec.FirewallPolicy.StatelessDefaultActions {
 				var f2f5elem string
 				f2f5elem = *f2f5iter
 				f2f5 = append(f2f5, &f2f5elem)
 			}
-			f2.SetStatelessFragmentDefaultActions(f2f5)
+			f2.SetStatelessDefaultActions(f2f5)
+		}
+		if r.ko.Spec.FirewallPolicy.StatelessFragmentDefaultActions != nil {
+			f2f6 := []*string{}
+			for _, f2f6iter := range r.ko.Spec.FirewallPolicy.StatelessFragmentDefaultActions {
+				var f2f6elem string
+				f2f6elem = *f2f6iter
+				f2f6 = append(f2f6, &f2f6elem)
+			}
+			f2.SetStatelessFragmentDefaultActions(f2f6)
 		}
 		if r.ko.Spec.FirewallPolicy.StatelessRuleGroupReferences != nil {
-			f2f6 := []*svcsdk.StatelessRuleGroupReference{}
-			for _, f2f6iter := range r.ko.Spec.FirewallPolicy.StatelessRuleGroupReferences {
-				f2f6elem := &svcsdk.StatelessRuleGroupReference{}
-				if f2f6iter.Priority != nil {
-					f2f6elem.SetPriority(*f2f6iter.Priority)
+			f2f7 := []*svcsdk.StatelessRuleGroupReference{}
+			for _, f2f7iter := range r.ko.Spec.FirewallPolicy.StatelessRuleGroupReferences {
+				f2f7elem := &svcsdk.StatelessRuleGroupReference{}
+				if f2f7iter.Priority != nil {
+					f2f7elem.SetPriority(*f2f7iter.Priority)
 				}
-				if f2f6iter.ResourceARN != nil {
-					f2f6elem.SetResourceArn(*f2f6iter.ResourceARN)
+				if f2f7iter.ResourceARN != nil {
+					f2f7elem.SetResourceArn(*f2f7iter.ResourceARN)
 				}
-				f2f6 = append(f2f6, f2f6elem)
+				f2f7 = append(f2f7, f2f7elem)
 			}
-			f2.SetStatelessRuleGroupReferences(f2f6)
+			f2.SetStatelessRuleGroupReferences(f2f7)
+		}
+		if r.ko.Spec.FirewallPolicy.TLSInspectionConfigurationARN != nil {
+			f2.SetTLSInspectionConfigurationArn(*r.ko.Spec.FirewallPolicy.TLSInspectionConfigurationARN)
 		}
 		res.SetFirewallPolicy(f2)
 	}
@@ -648,104 +702,131 @@ func (rm *resourceManager) newUpdateRequestPayload(
 	}
 	if r.ko.Spec.FirewallPolicy != nil {
 		f3 := &svcsdk.FirewallPolicy{}
-		if r.ko.Spec.FirewallPolicy.StatefulDefaultActions != nil {
-			f3f0 := []*string{}
-			for _, f3f0iter := range r.ko.Spec.FirewallPolicy.StatefulDefaultActions {
-				var f3f0elem string
-				f3f0elem = *f3f0iter
-				f3f0 = append(f3f0, &f3f0elem)
+		if r.ko.Spec.FirewallPolicy.PolicyVariables != nil {
+			f3f0 := &svcsdk.PolicyVariables{}
+			if r.ko.Spec.FirewallPolicy.PolicyVariables.RuleVariables != nil {
+				f3f0f0 := map[string]*svcsdk.IPSet{}
+				for f3f0f0key, f3f0f0valiter := range r.ko.Spec.FirewallPolicy.PolicyVariables.RuleVariables {
+					f3f0f0val := &svcsdk.IPSet{}
+					if f3f0f0valiter.Definition != nil {
+						f3f0f0valf0 := []*string{}
+						for _, f3f0f0valf0iter := range f3f0f0valiter.Definition {
+							var f3f0f0valf0elem string
+							f3f0f0valf0elem = *f3f0f0valf0iter
+							f3f0f0valf0 = append(f3f0f0valf0, &f3f0f0valf0elem)
+						}
+						f3f0f0val.SetDefinition(f3f0f0valf0)
+					}
+					f3f0f0[f3f0f0key] = f3f0f0val
+				}
+				f3f0.SetRuleVariables(f3f0f0)
 			}
-			f3.SetStatefulDefaultActions(f3f0)
+			f3.SetPolicyVariables(f3f0)
+		}
+		if r.ko.Spec.FirewallPolicy.StatefulDefaultActions != nil {
+			f3f1 := []*string{}
+			for _, f3f1iter := range r.ko.Spec.FirewallPolicy.StatefulDefaultActions {
+				var f3f1elem string
+				f3f1elem = *f3f1iter
+				f3f1 = append(f3f1, &f3f1elem)
+			}
+			f3.SetStatefulDefaultActions(f3f1)
 		}
 		if r.ko.Spec.FirewallPolicy.StatefulEngineOptions != nil {
-			f3f1 := &svcsdk.StatefulEngineOptions{}
+			f3f2 := &svcsdk.StatefulEngineOptions{}
 			if r.ko.Spec.FirewallPolicy.StatefulEngineOptions.RuleOrder != nil {
-				f3f1.SetRuleOrder(*r.ko.Spec.FirewallPolicy.StatefulEngineOptions.RuleOrder)
+				f3f2.SetRuleOrder(*r.ko.Spec.FirewallPolicy.StatefulEngineOptions.RuleOrder)
 			}
-			f3.SetStatefulEngineOptions(f3f1)
+			if r.ko.Spec.FirewallPolicy.StatefulEngineOptions.StreamExceptionPolicy != nil {
+				f3f2.SetStreamExceptionPolicy(*r.ko.Spec.FirewallPolicy.StatefulEngineOptions.StreamExceptionPolicy)
+			}
+			f3.SetStatefulEngineOptions(f3f2)
 		}
 		if r.ko.Spec.FirewallPolicy.StatefulRuleGroupReferences != nil {
-			f3f2 := []*svcsdk.StatefulRuleGroupReference{}
-			for _, f3f2iter := range r.ko.Spec.FirewallPolicy.StatefulRuleGroupReferences {
-				f3f2elem := &svcsdk.StatefulRuleGroupReference{}
-				if f3f2iter.Override != nil {
-					f3f2elemf0 := &svcsdk.StatefulRuleGroupOverride{}
-					if f3f2iter.Override.Action != nil {
-						f3f2elemf0.SetAction(*f3f2iter.Override.Action)
+			f3f3 := []*svcsdk.StatefulRuleGroupReference{}
+			for _, f3f3iter := range r.ko.Spec.FirewallPolicy.StatefulRuleGroupReferences {
+				f3f3elem := &svcsdk.StatefulRuleGroupReference{}
+				if f3f3iter.Override != nil {
+					f3f3elemf0 := &svcsdk.StatefulRuleGroupOverride{}
+					if f3f3iter.Override.Action != nil {
+						f3f3elemf0.SetAction(*f3f3iter.Override.Action)
 					}
-					f3f2elem.SetOverride(f3f2elemf0)
+					f3f3elem.SetOverride(f3f3elemf0)
 				}
-				if f3f2iter.Priority != nil {
-					f3f2elem.SetPriority(*f3f2iter.Priority)
+				if f3f3iter.Priority != nil {
+					f3f3elem.SetPriority(*f3f3iter.Priority)
 				}
-				if f3f2iter.ResourceARN != nil {
-					f3f2elem.SetResourceArn(*f3f2iter.ResourceARN)
-				}
-				f3f2 = append(f3f2, f3f2elem)
-			}
-			f3.SetStatefulRuleGroupReferences(f3f2)
-		}
-		if r.ko.Spec.FirewallPolicy.StatelessCustomActions != nil {
-			f3f3 := []*svcsdk.CustomAction{}
-			for _, f3f3iter := range r.ko.Spec.FirewallPolicy.StatelessCustomActions {
-				f3f3elem := &svcsdk.CustomAction{}
-				if f3f3iter.ActionDefinition != nil {
-					f3f3elemf0 := &svcsdk.ActionDefinition{}
-					if f3f3iter.ActionDefinition.PublishMetricAction != nil {
-						f3f3elemf0f0 := &svcsdk.PublishMetricAction{}
-						if f3f3iter.ActionDefinition.PublishMetricAction.Dimensions != nil {
-							f3f3elemf0f0f0 := []*svcsdk.Dimension{}
-							for _, f3f3elemf0f0f0iter := range f3f3iter.ActionDefinition.PublishMetricAction.Dimensions {
-								f3f3elemf0f0f0elem := &svcsdk.Dimension{}
-								if f3f3elemf0f0f0iter.Value != nil {
-									f3f3elemf0f0f0elem.SetValue(*f3f3elemf0f0f0iter.Value)
-								}
-								f3f3elemf0f0f0 = append(f3f3elemf0f0f0, f3f3elemf0f0f0elem)
-							}
-							f3f3elemf0f0.SetDimensions(f3f3elemf0f0f0)
-						}
-						f3f3elemf0.SetPublishMetricAction(f3f3elemf0f0)
-					}
-					f3f3elem.SetActionDefinition(f3f3elemf0)
-				}
-				if f3f3iter.ActionName != nil {
-					f3f3elem.SetActionName(*f3f3iter.ActionName)
+				if f3f3iter.ResourceARN != nil {
+					f3f3elem.SetResourceArn(*f3f3iter.ResourceARN)
 				}
 				f3f3 = append(f3f3, f3f3elem)
 			}
-			f3.SetStatelessCustomActions(f3f3)
+			f3.SetStatefulRuleGroupReferences(f3f3)
+		}
+		if r.ko.Spec.FirewallPolicy.StatelessCustomActions != nil {
+			f3f4 := []*svcsdk.CustomAction{}
+			for _, f3f4iter := range r.ko.Spec.FirewallPolicy.StatelessCustomActions {
+				f3f4elem := &svcsdk.CustomAction{}
+				if f3f4iter.ActionDefinition != nil {
+					f3f4elemf0 := &svcsdk.ActionDefinition{}
+					if f3f4iter.ActionDefinition.PublishMetricAction != nil {
+						f3f4elemf0f0 := &svcsdk.PublishMetricAction{}
+						if f3f4iter.ActionDefinition.PublishMetricAction.Dimensions != nil {
+							f3f4elemf0f0f0 := []*svcsdk.Dimension{}
+							for _, f3f4elemf0f0f0iter := range f3f4iter.ActionDefinition.PublishMetricAction.Dimensions {
+								f3f4elemf0f0f0elem := &svcsdk.Dimension{}
+								if f3f4elemf0f0f0iter.Value != nil {
+									f3f4elemf0f0f0elem.SetValue(*f3f4elemf0f0f0iter.Value)
+								}
+								f3f4elemf0f0f0 = append(f3f4elemf0f0f0, f3f4elemf0f0f0elem)
+							}
+							f3f4elemf0f0.SetDimensions(f3f4elemf0f0f0)
+						}
+						f3f4elemf0.SetPublishMetricAction(f3f4elemf0f0)
+					}
+					f3f4elem.SetActionDefinition(f3f4elemf0)
+				}
+				if f3f4iter.ActionName != nil {
+					f3f4elem.SetActionName(*f3f4iter.ActionName)
+				}
+				f3f4 = append(f3f4, f3f4elem)
+			}
+			f3.SetStatelessCustomActions(f3f4)
 		}
 		if r.ko.Spec.FirewallPolicy.StatelessDefaultActions != nil {
-			f3f4 := []*string{}
-			for _, f3f4iter := range r.ko.Spec.FirewallPolicy.StatelessDefaultActions {
-				var f3f4elem string
-				f3f4elem = *f3f4iter
-				f3f4 = append(f3f4, &f3f4elem)
-			}
-			f3.SetStatelessDefaultActions(f3f4)
-		}
-		if r.ko.Spec.FirewallPolicy.StatelessFragmentDefaultActions != nil {
 			f3f5 := []*string{}
-			for _, f3f5iter := range r.ko.Spec.FirewallPolicy.StatelessFragmentDefaultActions {
+			for _, f3f5iter := range r.ko.Spec.FirewallPolicy.StatelessDefaultActions {
 				var f3f5elem string
 				f3f5elem = *f3f5iter
 				f3f5 = append(f3f5, &f3f5elem)
 			}
-			f3.SetStatelessFragmentDefaultActions(f3f5)
+			f3.SetStatelessDefaultActions(f3f5)
+		}
+		if r.ko.Spec.FirewallPolicy.StatelessFragmentDefaultActions != nil {
+			f3f6 := []*string{}
+			for _, f3f6iter := range r.ko.Spec.FirewallPolicy.StatelessFragmentDefaultActions {
+				var f3f6elem string
+				f3f6elem = *f3f6iter
+				f3f6 = append(f3f6, &f3f6elem)
+			}
+			f3.SetStatelessFragmentDefaultActions(f3f6)
 		}
 		if r.ko.Spec.FirewallPolicy.StatelessRuleGroupReferences != nil {
-			f3f6 := []*svcsdk.StatelessRuleGroupReference{}
-			for _, f3f6iter := range r.ko.Spec.FirewallPolicy.StatelessRuleGroupReferences {
-				f3f6elem := &svcsdk.StatelessRuleGroupReference{}
-				if f3f6iter.Priority != nil {
-					f3f6elem.SetPriority(*f3f6iter.Priority)
+			f3f7 := []*svcsdk.StatelessRuleGroupReference{}
+			for _, f3f7iter := range r.ko.Spec.FirewallPolicy.StatelessRuleGroupReferences {
+				f3f7elem := &svcsdk.StatelessRuleGroupReference{}
+				if f3f7iter.Priority != nil {
+					f3f7elem.SetPriority(*f3f7iter.Priority)
 				}
-				if f3f6iter.ResourceARN != nil {
-					f3f6elem.SetResourceArn(*f3f6iter.ResourceARN)
+				if f3f7iter.ResourceARN != nil {
+					f3f7elem.SetResourceArn(*f3f7iter.ResourceARN)
 				}
-				f3f6 = append(f3f6, f3f6elem)
+				f3f7 = append(f3f7, f3f7elem)
 			}
-			f3.SetStatelessRuleGroupReferences(f3f6)
+			f3.SetStatelessRuleGroupReferences(f3f7)
+		}
+		if r.ko.Spec.FirewallPolicy.TLSInspectionConfigurationARN != nil {
+			f3.SetTLSInspectionConfigurationArn(*r.ko.Spec.FirewallPolicy.TLSInspectionConfigurationARN)
 		}
 		res.SetFirewallPolicy(f3)
 	}

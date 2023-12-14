@@ -56,6 +56,22 @@ spec:
                 description: The rule groups and policy actions to use in the firewall
                   policy.
                 properties:
+                  policyVariables:
+                    description: Contains variables that you can use to override default
+                      Suricata settings in your firewall policy.
+                    properties:
+                      ruleVariables:
+                        additionalProperties:
+                          description: A list of IP addresses and address ranges,
+                            in CIDR notation. This is part of a RuleVariables.
+                          properties:
+                            definition:
+                              items:
+                                type: string
+                              type: array
+                          type: object
+                        type: object
+                    type: object
                   statefulDefaultActions:
                     items:
                       type: string
@@ -65,6 +81,8 @@ spec:
                       rule groups in a firewall policy.
                     properties:
                       ruleOrder:
+                        type: string
+                      streamExceptionPolicy:
                         type: string
                     type: object
                   statefulRuleGroupReferences:
@@ -157,6 +175,8 @@ spec:
                           type: string
                       type: object
                     type: array
+                  tlsInspectionConfigurationARN:
+                    type: string
                 type: object
               firewallPolicyName:
                 description: The descriptive name of the firewall policy. You can't

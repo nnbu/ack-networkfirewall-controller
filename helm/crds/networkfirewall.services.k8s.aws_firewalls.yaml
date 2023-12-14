@@ -94,6 +94,8 @@ spec:
                     in each subnet that you specify, to filter traffic in the subnet's
                     Availability Zone.
                   properties:
+                    iPAddressType:
+                      type: string
                     subnetID:
                       type: string
                   type: object
@@ -235,6 +237,8 @@ spec:
                         in each subnet that you specify, to filter traffic in the
                         subnet's Availability Zone.
                       properties:
+                        iPAddressType:
+                          type: string
                         subnetID:
                           type: string
                       type: object
@@ -316,6 +320,8 @@ spec:
                             endpointID:
                               type: string
                             status:
+                              type: string
+                            statusMessage:
                               type: string
                             subnetID:
                               type: string

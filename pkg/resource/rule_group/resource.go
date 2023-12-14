@@ -90,9 +90,9 @@ func (r *resource) SetIdentifiers(identifier *ackv1alpha1.AWSIdentifiers) error 
 	}
 	r.ko.Spec.RuleGroupName = &identifier.NameOrID
 
-	f2, f2ok := identifier.AdditionalKeys["type_"]
-	if f2ok {
-		r.ko.Spec.Type = &f2
+	f3, f3ok := identifier.AdditionalKeys["type_"]
+	if f3ok {
+		r.ko.Spec.Type = &f3
 	}
 
 	return nil

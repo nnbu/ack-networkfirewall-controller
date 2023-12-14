@@ -71,8 +71,23 @@ func newResourceDelta(
 	if ackcompare.HasNilDifference(a.ko.Spec.FirewallPolicy, b.ko.Spec.FirewallPolicy) {
 		delta.Add("Spec.FirewallPolicy", a.ko.Spec.FirewallPolicy, b.ko.Spec.FirewallPolicy)
 	} else if a.ko.Spec.FirewallPolicy != nil && b.ko.Spec.FirewallPolicy != nil {
-		if !ackcompare.SliceStringPEqual(a.ko.Spec.FirewallPolicy.StatefulDefaultActions, b.ko.Spec.FirewallPolicy.StatefulDefaultActions) {
+		if ackcompare.HasNilDifference(a.ko.Spec.FirewallPolicy.PolicyVariables, b.ko.Spec.FirewallPolicy.PolicyVariables) {
+			delta.Add("Spec.FirewallPolicy.PolicyVariables", a.ko.Spec.FirewallPolicy.PolicyVariables, b.ko.Spec.FirewallPolicy.PolicyVariables)
+		} else if a.ko.Spec.FirewallPolicy.PolicyVariables != nil && b.ko.Spec.FirewallPolicy.PolicyVariables != nil {
+			if len(a.ko.Spec.FirewallPolicy.PolicyVariables.RuleVariables) != len(b.ko.Spec.FirewallPolicy.PolicyVariables.RuleVariables) {
+				delta.Add("Spec.FirewallPolicy.PolicyVariables.RuleVariables", a.ko.Spec.FirewallPolicy.PolicyVariables.RuleVariables, b.ko.Spec.FirewallPolicy.PolicyVariables.RuleVariables)
+			} else if len(a.ko.Spec.FirewallPolicy.PolicyVariables.RuleVariables) > 0 {
+				if !reflect.DeepEqual(a.ko.Spec.FirewallPolicy.PolicyVariables.RuleVariables, b.ko.Spec.FirewallPolicy.PolicyVariables.RuleVariables) {
+					delta.Add("Spec.FirewallPolicy.PolicyVariables.RuleVariables", a.ko.Spec.FirewallPolicy.PolicyVariables.RuleVariables, b.ko.Spec.FirewallPolicy.PolicyVariables.RuleVariables)
+				}
+			}
+		}
+		if len(a.ko.Spec.FirewallPolicy.StatefulDefaultActions) != len(b.ko.Spec.FirewallPolicy.StatefulDefaultActions) {
 			delta.Add("Spec.FirewallPolicy.StatefulDefaultActions", a.ko.Spec.FirewallPolicy.StatefulDefaultActions, b.ko.Spec.FirewallPolicy.StatefulDefaultActions)
+		} else if len(a.ko.Spec.FirewallPolicy.StatefulDefaultActions) > 0 {
+			if !ackcompare.SliceStringPEqual(a.ko.Spec.FirewallPolicy.StatefulDefaultActions, b.ko.Spec.FirewallPolicy.StatefulDefaultActions) {
+				delta.Add("Spec.FirewallPolicy.StatefulDefaultActions", a.ko.Spec.FirewallPolicy.StatefulDefaultActions, b.ko.Spec.FirewallPolicy.StatefulDefaultActions)
+			}
 		}
 		if ackcompare.HasNilDifference(a.ko.Spec.FirewallPolicy.StatefulEngineOptions, b.ko.Spec.FirewallPolicy.StatefulEngineOptions) {
 			delta.Add("Spec.FirewallPolicy.StatefulEngineOptions", a.ko.Spec.FirewallPolicy.StatefulEngineOptions, b.ko.Spec.FirewallPolicy.StatefulEngineOptions)
@@ -84,21 +99,55 @@ func newResourceDelta(
 					delta.Add("Spec.FirewallPolicy.StatefulEngineOptions.RuleOrder", a.ko.Spec.FirewallPolicy.StatefulEngineOptions.RuleOrder, b.ko.Spec.FirewallPolicy.StatefulEngineOptions.RuleOrder)
 				}
 			}
+			if ackcompare.HasNilDifference(a.ko.Spec.FirewallPolicy.StatefulEngineOptions.StreamExceptionPolicy, b.ko.Spec.FirewallPolicy.StatefulEngineOptions.StreamExceptionPolicy) {
+				delta.Add("Spec.FirewallPolicy.StatefulEngineOptions.StreamExceptionPolicy", a.ko.Spec.FirewallPolicy.StatefulEngineOptions.StreamExceptionPolicy, b.ko.Spec.FirewallPolicy.StatefulEngineOptions.StreamExceptionPolicy)
+			} else if a.ko.Spec.FirewallPolicy.StatefulEngineOptions.StreamExceptionPolicy != nil && b.ko.Spec.FirewallPolicy.StatefulEngineOptions.StreamExceptionPolicy != nil {
+				if *a.ko.Spec.FirewallPolicy.StatefulEngineOptions.StreamExceptionPolicy != *b.ko.Spec.FirewallPolicy.StatefulEngineOptions.StreamExceptionPolicy {
+					delta.Add("Spec.FirewallPolicy.StatefulEngineOptions.StreamExceptionPolicy", a.ko.Spec.FirewallPolicy.StatefulEngineOptions.StreamExceptionPolicy, b.ko.Spec.FirewallPolicy.StatefulEngineOptions.StreamExceptionPolicy)
+				}
+			}
 		}
-		if !reflect.DeepEqual(a.ko.Spec.FirewallPolicy.StatefulRuleGroupReferences, b.ko.Spec.FirewallPolicy.StatefulRuleGroupReferences) {
+		if len(a.ko.Spec.FirewallPolicy.StatefulRuleGroupReferences) != len(b.ko.Spec.FirewallPolicy.StatefulRuleGroupReferences) {
 			delta.Add("Spec.FirewallPolicy.StatefulRuleGroupReferences", a.ko.Spec.FirewallPolicy.StatefulRuleGroupReferences, b.ko.Spec.FirewallPolicy.StatefulRuleGroupReferences)
+		} else if len(a.ko.Spec.FirewallPolicy.StatefulRuleGroupReferences) > 0 {
+			if !reflect.DeepEqual(a.ko.Spec.FirewallPolicy.StatefulRuleGroupReferences, b.ko.Spec.FirewallPolicy.StatefulRuleGroupReferences) {
+				delta.Add("Spec.FirewallPolicy.StatefulRuleGroupReferences", a.ko.Spec.FirewallPolicy.StatefulRuleGroupReferences, b.ko.Spec.FirewallPolicy.StatefulRuleGroupReferences)
+			}
 		}
-		if !reflect.DeepEqual(a.ko.Spec.FirewallPolicy.StatelessCustomActions, b.ko.Spec.FirewallPolicy.StatelessCustomActions) {
+		if len(a.ko.Spec.FirewallPolicy.StatelessCustomActions) != len(b.ko.Spec.FirewallPolicy.StatelessCustomActions) {
 			delta.Add("Spec.FirewallPolicy.StatelessCustomActions", a.ko.Spec.FirewallPolicy.StatelessCustomActions, b.ko.Spec.FirewallPolicy.StatelessCustomActions)
+		} else if len(a.ko.Spec.FirewallPolicy.StatelessCustomActions) > 0 {
+			if !reflect.DeepEqual(a.ko.Spec.FirewallPolicy.StatelessCustomActions, b.ko.Spec.FirewallPolicy.StatelessCustomActions) {
+				delta.Add("Spec.FirewallPolicy.StatelessCustomActions", a.ko.Spec.FirewallPolicy.StatelessCustomActions, b.ko.Spec.FirewallPolicy.StatelessCustomActions)
+			}
 		}
-		if !ackcompare.SliceStringPEqual(a.ko.Spec.FirewallPolicy.StatelessDefaultActions, b.ko.Spec.FirewallPolicy.StatelessDefaultActions) {
+		if len(a.ko.Spec.FirewallPolicy.StatelessDefaultActions) != len(b.ko.Spec.FirewallPolicy.StatelessDefaultActions) {
 			delta.Add("Spec.FirewallPolicy.StatelessDefaultActions", a.ko.Spec.FirewallPolicy.StatelessDefaultActions, b.ko.Spec.FirewallPolicy.StatelessDefaultActions)
+		} else if len(a.ko.Spec.FirewallPolicy.StatelessDefaultActions) > 0 {
+			if !ackcompare.SliceStringPEqual(a.ko.Spec.FirewallPolicy.StatelessDefaultActions, b.ko.Spec.FirewallPolicy.StatelessDefaultActions) {
+				delta.Add("Spec.FirewallPolicy.StatelessDefaultActions", a.ko.Spec.FirewallPolicy.StatelessDefaultActions, b.ko.Spec.FirewallPolicy.StatelessDefaultActions)
+			}
 		}
-		if !ackcompare.SliceStringPEqual(a.ko.Spec.FirewallPolicy.StatelessFragmentDefaultActions, b.ko.Spec.FirewallPolicy.StatelessFragmentDefaultActions) {
+		if len(a.ko.Spec.FirewallPolicy.StatelessFragmentDefaultActions) != len(b.ko.Spec.FirewallPolicy.StatelessFragmentDefaultActions) {
 			delta.Add("Spec.FirewallPolicy.StatelessFragmentDefaultActions", a.ko.Spec.FirewallPolicy.StatelessFragmentDefaultActions, b.ko.Spec.FirewallPolicy.StatelessFragmentDefaultActions)
+		} else if len(a.ko.Spec.FirewallPolicy.StatelessFragmentDefaultActions) > 0 {
+			if !ackcompare.SliceStringPEqual(a.ko.Spec.FirewallPolicy.StatelessFragmentDefaultActions, b.ko.Spec.FirewallPolicy.StatelessFragmentDefaultActions) {
+				delta.Add("Spec.FirewallPolicy.StatelessFragmentDefaultActions", a.ko.Spec.FirewallPolicy.StatelessFragmentDefaultActions, b.ko.Spec.FirewallPolicy.StatelessFragmentDefaultActions)
+			}
 		}
-		if !reflect.DeepEqual(a.ko.Spec.FirewallPolicy.StatelessRuleGroupReferences, b.ko.Spec.FirewallPolicy.StatelessRuleGroupReferences) {
+		if len(a.ko.Spec.FirewallPolicy.StatelessRuleGroupReferences) != len(b.ko.Spec.FirewallPolicy.StatelessRuleGroupReferences) {
 			delta.Add("Spec.FirewallPolicy.StatelessRuleGroupReferences", a.ko.Spec.FirewallPolicy.StatelessRuleGroupReferences, b.ko.Spec.FirewallPolicy.StatelessRuleGroupReferences)
+		} else if len(a.ko.Spec.FirewallPolicy.StatelessRuleGroupReferences) > 0 {
+			if !reflect.DeepEqual(a.ko.Spec.FirewallPolicy.StatelessRuleGroupReferences, b.ko.Spec.FirewallPolicy.StatelessRuleGroupReferences) {
+				delta.Add("Spec.FirewallPolicy.StatelessRuleGroupReferences", a.ko.Spec.FirewallPolicy.StatelessRuleGroupReferences, b.ko.Spec.FirewallPolicy.StatelessRuleGroupReferences)
+			}
+		}
+		if ackcompare.HasNilDifference(a.ko.Spec.FirewallPolicy.TLSInspectionConfigurationARN, b.ko.Spec.FirewallPolicy.TLSInspectionConfigurationARN) {
+			delta.Add("Spec.FirewallPolicy.TLSInspectionConfigurationARN", a.ko.Spec.FirewallPolicy.TLSInspectionConfigurationARN, b.ko.Spec.FirewallPolicy.TLSInspectionConfigurationARN)
+		} else if a.ko.Spec.FirewallPolicy.TLSInspectionConfigurationARN != nil && b.ko.Spec.FirewallPolicy.TLSInspectionConfigurationARN != nil {
+			if *a.ko.Spec.FirewallPolicy.TLSInspectionConfigurationARN != *b.ko.Spec.FirewallPolicy.TLSInspectionConfigurationARN {
+				delta.Add("Spec.FirewallPolicy.TLSInspectionConfigurationARN", a.ko.Spec.FirewallPolicy.TLSInspectionConfigurationARN, b.ko.Spec.FirewallPolicy.TLSInspectionConfigurationARN)
+			}
 		}
 	}
 	if ackcompare.HasNilDifference(a.ko.Spec.FirewallPolicyName, b.ko.Spec.FirewallPolicyName) {

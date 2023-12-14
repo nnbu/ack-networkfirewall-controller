@@ -130,6 +130,9 @@ func (rm *resourceManager) sdkFind(
 			f0f9 := []*svcapitypes.SubnetMapping{}
 			for _, f0f9iter := range resp.Firewall.SubnetMappings {
 				f0f9elem := &svcapitypes.SubnetMapping{}
+				if f0f9iter.IPAddressType != nil {
+					f0f9elem.IPAddressType = f0f9iter.IPAddressType
+				}
 				if f0f9iter.SubnetId != nil {
 					f0f9elem.SubnetID = f0f9iter.SubnetId
 				}
@@ -202,6 +205,9 @@ func (rm *resourceManager) sdkFind(
 					}
 					if f1f3valiter.Attachment.Status != nil {
 						f1f3valf0.Status = f1f3valiter.Attachment.Status
+					}
+					if f1f3valiter.Attachment.StatusMessage != nil {
+						f1f3valf0.StatusMessage = f1f3valiter.Attachment.StatusMessage
 					}
 					if f1f3valiter.Attachment.SubnetId != nil {
 						f1f3valf0.SubnetID = f1f3valiter.Attachment.SubnetId
@@ -329,6 +335,9 @@ func (rm *resourceManager) sdkCreate(
 			f0f9 := []*svcapitypes.SubnetMapping{}
 			for _, f0f9iter := range resp.Firewall.SubnetMappings {
 				f0f9elem := &svcapitypes.SubnetMapping{}
+				if f0f9iter.IPAddressType != nil {
+					f0f9elem.IPAddressType = f0f9iter.IPAddressType
+				}
 				if f0f9iter.SubnetId != nil {
 					f0f9elem.SubnetID = f0f9iter.SubnetId
 				}
@@ -402,6 +411,9 @@ func (rm *resourceManager) sdkCreate(
 					if f1f3valiter.Attachment.Status != nil {
 						f1f3valf0.Status = f1f3valiter.Attachment.Status
 					}
+					if f1f3valiter.Attachment.StatusMessage != nil {
+						f1f3valf0.StatusMessage = f1f3valiter.Attachment.StatusMessage
+					}
 					if f1f3valiter.Attachment.SubnetId != nil {
 						f1f3valf0.SubnetID = f1f3valiter.Attachment.SubnetId
 					}
@@ -474,6 +486,9 @@ func (rm *resourceManager) newCreateRequestPayload(
 		f7 := []*svcsdk.SubnetMapping{}
 		for _, f7iter := range r.ko.Spec.SubnetMappings {
 			f7elem := &svcsdk.SubnetMapping{}
+			if f7iter.IPAddressType != nil {
+				f7elem.SetIPAddressType(*f7iter.IPAddressType)
+			}
 			if f7iter.SubnetID != nil {
 				f7elem.SetSubnetId(*f7iter.SubnetID)
 			}
