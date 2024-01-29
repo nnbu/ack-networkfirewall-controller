@@ -1,0 +1,11 @@
+apiVersion: networkfirewall.services.k8s.aws/v1alpha1
+kind: Firewall
+metadata:
+  name: $FIREWALL_NAME
+spec:
+  deleteProtection: false
+  firewallName: $FIREWALL_NAME
+  firewallPolicyARN: $FIREWALL_POLICY_ARN
+  subnetMappings:
+  - subnetID: $SUBNET_ID
+  vpcID: $VPC_ID

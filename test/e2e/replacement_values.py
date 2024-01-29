@@ -10,19 +10,11 @@
 # on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
-"""Cleans up the resources created by the EC2 bootstrapping process.
+"""Stores the values used by each of the integration tests for replacing the
+networkfirewall-specific test variables.
 """
 
-import logging
-
-from acktest.bootstrapping import Resources
-from e2e import bootstrap_directory
-
-def service_cleanup():
-    logging.getLogger().setLevel(logging.INFO)
-
-    resources = Resources.deserialize(bootstrap_directory)
-    resources.cleanup()
-
-if __name__ == "__main__":
-    service_cleanup()
+REPLACEMENT_VALUES = {
+    "ENABLE_DNS_SUPPORT": "False",
+    "ENABLE_DNS_HOSTNAMES": "False",
+}

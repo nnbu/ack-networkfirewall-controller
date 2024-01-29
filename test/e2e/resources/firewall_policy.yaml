@@ -1,0 +1,16 @@
+apiVersion: networkfirewall.services.k8s.aws/v1alpha1
+kind: FirewallPolicy
+metadata:
+  name: $FIREWALL_POLICY_NAME
+spec:
+  firewallPolicyName: $FIREWALL_POLICY_NAME
+  firewallPolicy:
+    statefulDefaultActions:
+    - $STATEFUL_DEFAULT_ACTION
+    statefulEngineOptions:
+      ruleOrder: $RULE_ORDER
+      streamExceptionPolicy: $STREAM_EXCEPTION_POLICY
+    statelessDefaultActions:
+    - $STATELESS_DEFAULT_ACTION
+    statelessFragmentDefaultActions:
+    - $STATELESS_FRAG_DEFAULT_ACTION
