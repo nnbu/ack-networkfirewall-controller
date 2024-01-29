@@ -22,6 +22,8 @@ resources:
     hooks:
       sdk_delete_post_request:
         template_path: common/sdk_delete_post_request.go.tpl
+      sdk_read_one_post_set_output:
+        template_path: common/sdk_read_one_post_set_output.go.tpl
   FirewallPolicy:
     exceptions:
       terminal_codes:

@@ -12,3 +12,33 @@
 # permissions and limitations under the License.
 """Bootstraps the resources required to run EC2 integration tests.
 """
+
+import logging
+
+from acktest.bootstrapping import Resources, BootstrapFailureException
+from acktest.bootstrapping.vpc import VPC
+from acktest.bootstrapping.s3 import Bucket
+from e2e import bootstrap_directory
+from e2e.bootstrap_resources import BootstrapResources
+
+def service_bootstrap() -> Resources:
+    logging.getLogger().setLevel(logging.INFO)
+
+    resources = BootstrapResources(
+        SharedTestVPC=VPC(name_prefix="e2e-test-networkfirewall-vpc", num_public_subnet=1, num_private_subnet=0),
+        LogsBucket=Bucket(
+            "ack-networkfirewall-controller-firewall-tests",
+        ),
+    )
+
+    try:
+        resources.bootstrap()
+    except BootstrapFailureException:
+        exit(254)
+
+    return resources
+
+if __name__ == "__main__":
+    config = service_bootstrap()
+    # Write config to current directory by default
+    config.serialize(bootstrap_directory)

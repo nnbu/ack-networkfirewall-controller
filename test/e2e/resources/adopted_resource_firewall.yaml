@@ -1,0 +1,13 @@
+apiVersion: services.k8s.aws/v1alpha1
+kind: AdoptedResource
+metadata:
+  name: $ADOPTED_RESOURCE_NAME
+spec:
+  aws:
+    nameOrID: $FIREWALL_NAME
+  kubernetes:
+    group: networkfirewall.services.k8s.aws
+    kind: Firewall
+    metadata:
+      name: $ADOPTED_FIREWALL_NAME
+      namespace: default
