@@ -20,10 +20,8 @@ import (
 )
 
 var (
-	resourceName = GroupKind.Kind
-
 	requeueWaitWhileDeleting = ackrequeue.NeededAfter(
-		errors.New(resourceName+" is Deleting."),
+		errors.New(GroupKind.Kind+" is deleting."),
 		ackrequeue.DefaultRequeueAfterDuration,
 	)
 )
