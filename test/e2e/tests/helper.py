@@ -19,7 +19,31 @@ import time
 import pytest
 import logging
 
+from acktest.resources import random_suffix_name
+from e2e import create_firewall_resource
+from e2e.replacement_values import REPLACEMENT_VALUES
+
 WAIT_AFTER_SECONDS = 10
+
+def create_simple_firewall_policy():
+    resource_name = random_suffix_name("fw-pol-ack-test", 24)
+
+    replacements = REPLACEMENT_VALUES.copy()
+    replacements["FIREWALL_POLICY_NAME"] = resource_name
+    replacements["STATEFUL_DEFAULT_ACTION"] = "aws:drop_established"
+    replacements["RULE_ORDER"] = "STRICT_ORDER"
+    replacements["STREAM_EXCEPTION_POLICY"] = "DROP"
+    replacements["STATELESS_DEFAULT_ACTION"] = "aws:drop"
+    replacements["STATELESS_FRAG_DEFAULT_ACTION"] = "aws:forward_to_sfe"
+
+    ref, cr = create_firewall_resource(
+        "firewallpolicies",
+        resource_name,
+        "firewall_policy",
+        replacements,
+    )
+
+    return ref, cr
 
 class NetworkFirewallValidator:
     def __init__(self, networkfirewall_client):

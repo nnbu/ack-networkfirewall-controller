@@ -12,9 +12,11 @@
 # permissions and limitations under the License.
 
 import pytest
-from typing import Dict, Any
-from pathlib import Path
 
+from pathlib import Path
+from typing import Dict, Any
+
+from acktest.k8s import resource as k8s
 from acktest.resources import load_resource_file
 
 SERVICE_NAME = "networkfirewall"
@@ -31,3 +33,36 @@ def load_networkfirewall_resource(resource_name: str, additional_replacements: D
     directory for the current service.
     """
     return load_resource_file(resource_directory, resource_name, additional_replacements=additional_replacements)
+
+def create_firewall_resource(
+    resource_plural,
+    resource_name,
+    spec_file,
+    replacements,
+    crd_group=CRD_GROUP,
+    namespace="default",
+):
+    resource_data = load_networkfirewall_resource(
+        spec_file,
+        additional_replacements=replacements,
+    )
+
+    ref = k8s.CustomResourceReference(
+        crd_group, CRD_VERSION, resource_plural,
+        resource_name, namespace,
+    )
+    k8s.create_custom_resource(ref, resource_data)
+
+    cr = k8s.wait_resource_consumed_by_controller(ref)
+
+    assert cr is not None
+    assert k8s.get_resource_exists(ref)
+
+    return ref, cr
+
+def delete_firewall_resource(ref):
+    try:
+        _, deleted = k8s.delete_custom_resource(ref, 3, 10)
+        assert deleted
+    except:
+        pass

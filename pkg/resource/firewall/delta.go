@@ -42,6 +42,7 @@ func newResourceDelta(
 		delta.Add("", a, b)
 		return delta
 	}
+	customPreCompare(delta, a, b)
 
 	if ackcompare.HasNilDifference(a.ko.Spec.DeleteProtection, b.ko.Spec.DeleteProtection) {
 		delta.Add("Spec.DeleteProtection", a.ko.Spec.DeleteProtection, b.ko.Spec.DeleteProtection)
@@ -101,13 +102,6 @@ func newResourceDelta(
 	} else if a.ko.Spec.SubnetChangeProtection != nil && b.ko.Spec.SubnetChangeProtection != nil {
 		if *a.ko.Spec.SubnetChangeProtection != *b.ko.Spec.SubnetChangeProtection {
 			delta.Add("Spec.SubnetChangeProtection", a.ko.Spec.SubnetChangeProtection, b.ko.Spec.SubnetChangeProtection)
-		}
-	}
-	if len(a.ko.Spec.SubnetMappings) != len(b.ko.Spec.SubnetMappings) {
-		delta.Add("Spec.SubnetMappings", a.ko.Spec.SubnetMappings, b.ko.Spec.SubnetMappings)
-	} else if len(a.ko.Spec.SubnetMappings) > 0 {
-		if !reflect.DeepEqual(a.ko.Spec.SubnetMappings, b.ko.Spec.SubnetMappings) {
-			delta.Add("Spec.SubnetMappings", a.ko.Spec.SubnetMappings, b.ko.Spec.SubnetMappings)
 		}
 	}
 	if !ackcompare.MapStringStringEqual(ToACKTags(a.ko.Spec.Tags), ToACKTags(b.ko.Spec.Tags)) {

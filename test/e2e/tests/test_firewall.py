@@ -19,29 +19,25 @@ import time
 
 from acktest.resources import random_suffix_name
 from acktest.k8s import resource as k8s
-from e2e import service_marker, CRD_GROUP, CRD_VERSION, load_networkfirewall_resource
+from e2e import service_marker, load_networkfirewall_resource, create_firewall_resource, delete_firewall_resource
 from e2e.replacement_values import REPLACEMENT_VALUES
 from e2e.bootstrap_resources import get_bootstrap_resources
-from e2e.tests.helper import NetworkFirewallValidator
+from e2e.tests.helper import NetworkFirewallValidator, create_simple_firewall_policy
 
-RESOURCE_PLURAL = "firewalls"
-
-CREATE_WAIT_AFTER_SECONDS = 10
 UPDATE_WAIT_AFTER_SECONDS = 30
 # It takes really long for firewall to be created/deleted.
-TIMEOUT_SECONDS = 1000
+TIMEOUT_SECONDS = 1200
 
 @pytest.fixture
-def simple_firewall(request, simple_firewall_policy):
+def simple_firewall(request):
     fw_resource_name = random_suffix_name("firewall-ack-test", 24)
     resources = get_bootstrap_resources()
 
-    (_, policy_cr) = simple_firewall_policy
+    policy_ref, policy_cr = create_simple_firewall_policy()
     policy_status = policy_cr["status"]
     policy_resp = policy_status["firewallPolicyResponse"]
     policy_arn = policy_resp["firewallPolicyARN"]
     subnet_id = resources.SharedTestVPC.public_subnets.subnet_ids[0]
-
 
     replacements = REPLACEMENT_VALUES.copy()
     replacements["FIREWALL_NAME"] = fw_resource_name
@@ -52,136 +48,73 @@ def simple_firewall(request, simple_firewall_policy):
     replacements["TRAFFIC_TYPE"] = "ALL"
     replacements["FIREWALL_POLICY_ARN"] = policy_arn
 
-    # Load Network Firewall CR
-    resource_data = load_networkfirewall_resource(
-        "firewall",
-        additional_replacements=replacements,
-    )
-
-    # Create k8s resource
-    ref = k8s.CustomResourceReference(
-        CRD_GROUP,
-        CRD_VERSION,
-        RESOURCE_PLURAL,
+    ref, cr = create_firewall_resource(
+        "firewalls",
         fw_resource_name,
-        namespace="default",
+        "firewall",
+        replacements,
     )
-    k8s.create_custom_resource(ref, resource_data)
 
-    time.sleep(CREATE_WAIT_AFTER_SECONDS)
+    assert cr["status"]["firewall"]["firewallPolicyARN"] == policy_arn
 
-    # Get latest Network Firewall CR
-    cr = k8s.wait_resource_consumed_by_controller(ref)
+    # Create a new firewall policy
+    new_policy_ref, policy_cr = create_simple_firewall_policy()
+    policy_status = policy_cr["status"]
+    policy_resp = policy_status["firewallPolicyResponse"]
+    policy_arn = policy_resp["firewallPolicyARN"]
 
+    # Update existing firewall with new policy
+    updates = {
+        "spec": {
+            "firewallPolicyARN": policy_arn,
+        }
+    }
+    k8s.patch_custom_resource(ref, updates)
+    time.sleep(UPDATE_WAIT_AFTER_SECONDS)
+
+    cr = k8s.get_resource(ref)
+
+    # Ensure policy ARN was updated in the firewall
     assert cr is not None
-    assert k8s.get_resource_exists(ref)
+    assert cr["status"]["firewall"]["firewallPolicyARN"] == policy_arn
 
     yield (ref, cr)
 
     # Try to delete, if doesn't already exist
-    try:
-        _, deleted = k8s.delete_custom_resource(ref, 3, 10)
-        assert deleted
-    except:
-        pass
+    delete_firewall_resource(policy_ref)
+    delete_firewall_resource(new_policy_ref)
+    delete_firewall_resource(ref)
 
-@pytest.fixture
-def simple_firewall_policy(request):
-    resource_name = random_suffix_name("fw-pol-ack-test", 24)
-
-    replacements = REPLACEMENT_VALUES.copy()
-    replacements["FIREWALL_POLICY_NAME"] = resource_name
-    replacements["STATEFUL_DEFAULT_ACTION"] = "aws:drop_established"
-    replacements["RULE_ORDER"] = "STRICT_ORDER"
-    replacements["STREAM_EXCEPTION_POLICY"] = "DROP"
-    replacements["STATELESS_DEFAULT_ACTION"] = "aws:drop"
-    replacements["STATELESS_FRAG_DEFAULT_ACTION"] = "aws:forward_to_sfe"
-
-    # Load Firewall Policy CR
-    resource_data = load_networkfirewall_resource(
-        "firewall_policy",
-        additional_replacements=replacements,
-    )
-
-    # Create k8s resource
-    ref = k8s.CustomResourceReference(
-        CRD_GROUP,
-        CRD_VERSION,
-        "firewallpolicies",
-        resource_name,
-        namespace="default",
-    )
-    k8s.create_custom_resource(ref, resource_data)
-
-    time.sleep(CREATE_WAIT_AFTER_SECONDS)
-
-    # Get latest Firewall Policy CR
-    cr = k8s.wait_resource_consumed_by_controller(ref)
-
-    assert cr is not None
-    assert k8s.get_resource_exists(ref)
-
-    yield (ref, cr)
-
-    # Try to delete, if doesn't already exist
-    try:
-        _, deleted = k8s.delete_custom_resource(ref, 3, 10)
-        assert deleted
-    except:
-        pass
-
-def create_adopted_resource_firewall(firwall_name):
+def create_adopted_resource_firewall(firewall_name):
     adopted_resource_name = random_suffix_name("firewall-ack-test-adopted-resource", 48)
     adopted_resource_fw_name = random_suffix_name("firewall-ack-test-adopted-resource-fw", 48)
 
     replacements = REPLACEMENT_VALUES.copy()
     replacements["ADOPTED_FIREWALL_NAME"] = adopted_resource_fw_name
     replacements["ADOPTED_RESOURCE_NAME"] = adopted_resource_name
-    replacements["FIREWALL_NAME"] = firwall_name
+    replacements["FIREWALL_NAME"] = firewall_name
 
-    # Load Adopted Resource CR to adopt firewall
-    resource_data = load_networkfirewall_resource(
-        "adopted_resource_firewall",
-        additional_replacements=replacements,
-    )
-
-    # Create k8s resource
-    adopted_resource_ref = k8s.CustomResourceReference(
-        "services.k8s.aws",
-        "v1alpha1",
+    ref, cr = create_firewall_resource(
         "AdoptedResources",
         adopted_resource_name,
-        namespace="default",
+        "adopted_resource_firewall",
+        replacements,
+        "services.k8s.aws"
     )
-    k8s.create_custom_resource(adopted_resource_ref, resource_data)
-
-    time.sleep(6 * CREATE_WAIT_AFTER_SECONDS)
-
-    # Get latest AdoptedResource CR
-    adopted_resource_cr = k8s.wait_resource_consumed_by_controller(adopted_resource_ref)
-
-    assert adopted_resource_cr is not None
-    assert k8s.get_resource_exists(adopted_resource_ref)
 
     # Get Firewall CR generated by AdoptedResource
     fw_ref = k8s.CustomResourceReference(
-        CRD_GROUP,
-        CRD_VERSION,
-        RESOURCE_PLURAL,
+        "networkfirewall.services.k8s.aws",
+        "v1alpha1",
+        "firewalls",
         adopted_resource_fw_name,
         namespace="default",
     )
 
-    time.sleep(CREATE_WAIT_AFTER_SECONDS)
-
     fw_cr = k8s.wait_resource_consumed_by_controller(fw_ref)
 
     # Try to delete, if doesn't already exist
-    try:
-        _, deleted = k8s.delete_custom_resource(adopted_resource_ref, 3, 10)
-        assert deleted
-    except:
-        pass
+    delete_firewall_resource(ref)
 
     return (fw_ref, fw_cr)
 
@@ -193,17 +126,17 @@ class TestNetworkFirewall:
         (fw, cr) = simple_firewall
 
         firewall_config = cr["status"]["firewall"]
-        firwall_name = firewall_config["firewallName"]
+        firewall_name = firewall_config["firewallName"]
 
         networkfirewall_validator = NetworkFirewallValidator(networkfirewall_client)
         # Check Network Firewall comes to READY state
-        networkfirewall_validator.wait_for_firewall_creation_or_die(firwall_name, "READY", TIMEOUT_SECONDS)
+        networkfirewall_validator.wait_for_firewall_creation_or_die(firewall_name, "READY", TIMEOUT_SECONDS)
 
         # Adopt firewall using AdoptedResource CR
-        (fw_ref, fw_cr) = create_adopted_resource_firewall(firwall_name)
+        (fw_ref, fw_cr) = create_adopted_resource_firewall(firewall_name)
 
         # Delete k8s resource
         k8s.delete_custom_resource(fw_ref)
 
         # Check Firewall no longer exists in AWS
-        networkfirewall_validator.wait_for_firewall_deletion_or_die(firwall_name, TIMEOUT_SECONDS)
+        networkfirewall_validator.wait_for_firewall_deletion_or_die(firewall_name, TIMEOUT_SECONDS)
