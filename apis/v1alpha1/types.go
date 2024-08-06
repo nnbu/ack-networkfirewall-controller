@@ -591,7 +591,7 @@ type StatelessRulesAndCustomActions struct {
 // instance of the associated firewall in each subnet that you specify, to filter
 // traffic in the subnet's Availability Zone.
 type SubnetMapping struct {
-	IPAddressType *string `json:"iPAddressType,omitempty"`
+	IPAddressType *string `json:"ipAddressType,omitempty"`
 	SubnetID      *string `json:"subnetID,omitempty"`
 }
 

@@ -106,7 +106,7 @@ spec:
                     instance of the associated firewall in each subnet that you specify, to filter
                     traffic in the subnet's Availability Zone.
                   properties:
-                    iPAddressType:
+                    ipAddressType:
                       type: string
                     subnetID:
                       type: string
@@ -255,7 +255,7 @@ spec:
                         instance of the associated firewall in each subnet that you specify, to filter
                         traffic in the subnet's Availability Zone.
                       properties:
-                        iPAddressType:
+                        ipAddressType:
                           type: string
                         subnetID:
                           type: string
