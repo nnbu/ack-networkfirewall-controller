@@ -158,7 +158,7 @@ spec:
                   referenceSets:
                     description: Contains a set of IP set references.
                     properties:
-                      iPSetReferences:
+                      ipSetReferences:
                         additionalProperties:
                           description: |-
                             Configures one or more IP set references for a Suricata-compatible rule group.
@@ -187,7 +187,7 @@ spec:
                       Settings that are available for use in the rules in the RuleGroup where this
                       is defined.
                     properties:
-                      iPSets:
+                      ipSets:
                         additionalProperties:
                           description: |-
                             A list of IP addresses and address ranges, in CIDR notation. This is part

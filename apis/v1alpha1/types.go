@@ -71,7 +71,7 @@ type Attachment struct {
 // all CIDRs used by the IP sets you are referencing.
 type CIDRSummary struct {
 	AvailableCIDRCount *int64                    `json:"availableCIDRCount,omitempty"`
-	IPSetReferences    map[string]*IPSetMetadata `json:"iPSetReferences,omitempty"`
+	IPSetReferences    map[string]*IPSetMetadata `json:"ipSetReferences,omitempty"`
 	UtilizedCIDRCount  *int64                    `json:"utilizedCIDRCount,omitempty"`
 }
 
@@ -335,7 +335,7 @@ type PublishMetricAction struct {
 
 // Contains a set of IP set references.
 type ReferenceSets struct {
-	IPSetReferences map[string]*IPSetReference `json:"iPSetReferences,omitempty"`
+	IPSetReferences map[string]*IPSetReference `json:"ipSetReferences,omitempty"`
 }
 
 // The inspection criteria and action for a single stateless rule. Network Firewall
@@ -427,7 +427,7 @@ type RuleOption struct {
 // Settings that are available for use in the rules in the RuleGroup where this
 // is defined.
 type RuleVariables struct {
-	IPSets   map[string]*IPSet   `json:"iPSets,omitempty"`
+	IPSets   map[string]*IPSet   `json:"ipSets,omitempty"`
 	PortSets map[string]*PortSet `json:"portSets,omitempty"`
 }
 
