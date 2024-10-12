@@ -3,7 +3,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.14.0
+    controller-gen.kubebuilder.io/version: v0.16.2
   name: firewalls.networkfirewall.services.k8s.aws
 spec:
   group: networkfirewall.services.k8s.aws
@@ -40,12 +40,10 @@ spec:
             description: |-
               FirewallSpec defines the desired state of Firewall.
 
-
               The firewall defines the configuration settings for an Network Firewall firewall.
               These settings include the firewall policy, the subnets in your VPC to use
               for the firewall endpoints, and any tags that are attached to the firewall
               Amazon Web Services resource.
-
 
               The status of the firewall, for example whether it's ready to filter network
               traffic, is provided in the corresponding FirewallStatus. You can retrieve
@@ -133,7 +131,6 @@ spec:
                   The unique identifier of the VPC where Network Firewall should create the
                   firewall.
 
-
                   You can't change this setting after you create the firewall.
                 type: string
             required:
@@ -159,7 +156,6 @@ spec:
                       when it has verified that an "adopted" resource (a resource where the
                       ARN annotation was set by the Kubernetes user on the CR) exists and
                       matches the supplied CR's Spec field values.
-                      TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
                       https://github.com/aws/aws-controllers-k8s/issues/270
                     type: string
                   ownerAccountID:
@@ -323,17 +319,13 @@ spec:
                         The status of the firewall endpoint and firewall policy configuration for
                         a single VPC subnet.
 
-
                         For each VPC subnet that you associate with a firewall, Network Firewall
                         does the following:
 
-
                            * Instantiates a firewall endpoint in the subnet, ready to take traffic.
-
 
                            * Configures the endpoint with the current firewall policy settings, to
                            provide the filtering behavior for the endpoint.
-
 
                         When you update a firewall, for example to add a subnet association or change
                         a rule group in the firewall policy, the affected sync states reflect out-of-sync
